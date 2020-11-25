@@ -1,0 +1,15 @@
+---
+title: "Global Fishing Watch Data Standard Operating Procedure"
+author: ""
+date: "`r Sys.Date()`"
+description: "Standard operating procedures for emLab projects using Global Fishing Watch data"
+url: "https://emlab-ucsb.github.io/gfw-SOP/"
+github-repo: "emlab-ucsb/gfw-SOP"
+site: bookdown::bookdown_site
+documentclass: book
+favicon: "favicon.png"
+---
+
+# Overview
+
+This reference guide describes standard operating procedures (SOP) for using Global Fishing Watch (GFW) data in emLab projects. This SOP is organized into 5 different sections: (1) Global Fishing Watch Basics, (2) Setup and Access, (3) Data, (4) Workflow, and (5) Additional Resources. Section 1 provides an overview of Global Fishing Watch data; Section 2 covers how to setup BigQuery and access the data; Section 3 describes the core GFW datasets and tables; Section 4 offers suggestions for streamlining workflow between BigQuery and R; and Section 5 highlights additional data training resources. 

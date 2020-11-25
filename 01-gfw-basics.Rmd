@@ -1,0 +1,7 @@
+---
+title: "Global Fishing Watch Basics"
+output: html_document
+---
+
+# Global Fishing Watch Basics {#basics}
+
