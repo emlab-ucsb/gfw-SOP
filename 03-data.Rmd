@@ -4,3 +4,46 @@ output: html_document
 ---
 
 # Data 
+
+BigQuery data have a three level structure: projects, datasets, and tables. There are two main projects that you should have access to: `world-fishing-827` and `emlab-gcp`. The GFW data lives in the `world-fishing-827` project and core datasets and tables are discussed further below. The `emlab-gcp` project is where any scratch datasets and tables should be saved. Functions to create and save tables to BigQuery are detailed in Section 4.2.3. No direct changes should ever be made to GFW datasets or tables in the `world-fishing-827` project.  
+
+## Core AIS Datasets and Assumptions
+
+The `world-fishing-827` project has four main AIS datasets for general analysis:  `pipe_production_vYYYYMMDD`, `gfw_research`, `anchorages`, and `vessel_database`. 
+
+`pipe_production_vYYYYMMDD`  
+
+This is GFW’s core internal dataset and is the output of the pipeline, which is a process that automates parsing, cleaning, augmenting, and publishing the raw AIS data. In most cases, queries should use the research tables in `gfw_research` not the pipeline tables. However, the following are some tables that are only found in the pipeline which may be useful to emLab researchers:  
+
+ * `port_events_YYYYMMDD`  
+    + List of port events by vessel id (not ssvid)  
+    + Important fields: vessel_id, timestamp, anchorage_id  
+    + Assumptions: Port events are individual events composed of a port entry/port exit pair. A port entry occurs when the vessel comes within 3 km of an anchorage point and the port exit occurs when the vessel is more than 4 km from an anchorage point  
+    + The port events table is organized daily. To select all events from a year (for example 2020) use `world-fishing-827.pipe_production_vYYYYMMDD.port_events_2020*`, or select a single day (for example 1.1.20) to reduce query size and cost using `world-fishing-827.pipe_production_vYYYYMMDD.port_events_20200101`  
+    
+ * `port_visits_YYYYMMDD`  
+    + List of port visits by vessel id (not ssvid)  
+    + Important fields: vessel_id, start_anchorage_id, end_anchorage_id, start_timestamp, end_timestamp   
+    + Assumptions: port visits must include a port entry, a port stop or a port gap, and  a port exit. Port stops begin when the vessel speed is < 0.2 knots and ends when the vessel speed is > 0.5 knots. Port gaps are defined as gaps in AIS transmission for more than 4 hours   
+    + The port visits table is also organized daily and can be subsetted and queried in the same way as the port events table  
+    
+ * `published_events_encounters`  
+    + List of encounter events; each encounter event is listed twice with the event_id field ending in .1 or .2 to distinguish between the first and second vessel involved  
+    + Important fields: event_id, vessel_id, event_start, event_end  
+    + Assumptions: 2 vessels within 500 meters of each other, traveling < 2 knots, minimum duration of 2 hours, and at least 10 km from a coastal anchorage  
+    
+ * `spatial_measures_YYYYMMDD`  
+    + Spatial information (for EEZs, RMFOs etc.) by gridded longitude, latitude   
+    + Important fields: gridcode, regions record  
+    + Assumptions: Gridded longitude, latitude (WGS84) at 0.01 resolution  
+    
+ * `voyages`  
+    + List of voyages by ssvid  
+    + Important fields: ssvid, vessel_id, trip_id, trip_start_anchorage_id, trip_end_anchorage_id  
+    + Assumptions: voyages are a port exit/port entry pair, following a vessel from when it leaves a port to the next time it enters a port  
+    
+    
+`gfw_research`  
+
+The second dataset `gfw_research`, is most commonly used by GFW research partners. These tables are versions of the pipeline tables that have been altered to make them more suitable and cost effective for analysis. The following are some tables that may be most relevant to emLab researchers: 
+
