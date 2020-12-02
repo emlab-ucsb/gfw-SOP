@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>3 Setup and Access | Global Fishing Watch Data Standard Operating Procedure</title>
+  <title>2.1 Types of Data | Global Fishing Watch Data Standard Operating Procedure</title>
   <meta name="description" content="Standard operating procedures for emLab projects using Global Fishing Watch data" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="3 Setup and Access | Global Fishing Watch Data Standard Operating Procedure" />
+  <meta property="og:title" content="2.1 Types of Data | Global Fishing Watch Data Standard Operating Procedure" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://emlab-ucsb.github.io/gfw-SOP/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="emlab-ucsb/gfw-SOP" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3 Setup and Access | Global Fishing Watch Data Standard Operating Procedure" />
+  <meta name="twitter:title" content="2.1 Types of Data | Global Fishing Watch Data Standard Operating Procedure" />
   
   <meta name="twitter:description" content="Standard operating procedures for emLab projects using Global Fishing Watch data" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
-<link rel="prev" href="2-3-data-caution.html"/>
-<link rel="next" href="3-1-bigquery-setup.html"/>
+<link rel="prev" href="2-basics.html"/>
+<link rel="next" href="2-2-available-data.html"/>
 <script src="assets/jquery-2.2.3/jquery.min.js"></script>
 <link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -102,16 +102,19 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="setup-and-access" class="section level1">
-<h1><span class="header-section-number">3</span> Setup and Access</h1>
+<div id="types-of-data" class="section level2">
+<h2><span class="header-section-number">2.1</span> Types of Data</h2>
+<p>The Global Fishing Watch (GFW) primary dataset is compiled from Automated Identification System (AIS) data. AIS was originally designed for ship-to-ship communication to help avoid collisions and vessels transmit a lot of information within an AIS message including vessel identity, position, and speed. AIS messages are received by other ships as well as being picked up by terrestrial and satellite receivers. These data are publicly available. More detailed information on AIS and the challenges and opportunities for using AIS to map and analyze fishing activity are presented in the 2019 <a href="http://www.fao.org/documents/card/en/c/ca7012en">Global Atlas of AIS-based Fishing Activity</a>.</p>
+<p>The GFW database also has Vessel Monitoring System (VMS) data for a number of countries. VMS broadcasts vessel location to satellite and terrestrial receivers, which are then relayed to shore-based fishery monitoring centers. Unlike AIS, VMS data are not publicly available and the GFW database only contains data for countries who have agreed to share them. The <a href="https://docs.google.com/spreadsheets/d/1B8Q04rzWRdffty2gVBlHiBDS9DYZLdW8J-4B3xja5ws/edit#gid=0">BigQuery Reference Table</a> contains the most up to date list of available country VMS data.</p>
+<p>GFW also has a new dark targets dataset composed of vessel detections derived from global satellite imagery collections including Visible Infrared Imaging Radiometer Suite (VIIRS) and Synthetic Aperture Radar (SAR). The VIIRS dataset uses satellites to detect vessels operating at night with visible light but is limited by clouds and lunar illumination. SAR uses radio waves to detect vessels but satellites are mainly land based and there is limited ocean coverage. These datasets have been used together and combined with high-resolution optical imagery to illuminate vessels that don’t broadcast AIS, also known as dark targets. Both of these datasets can detect vessels but neither show continuous vessel tracks. When possible, VIIRS detections are matched to AIS in the <code>world-fishing-827.gfw_research.viirs_matched_vYYYYMMDD</code> table.</p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="2-3-data-caution.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="3-1-bigquery-setup.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="2-basics.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="2-2-available-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="assets/gitbook-2.6.7/js/app.min.js"></script>

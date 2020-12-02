@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Global Fishing Watch Data Standard Operating Procedure</title>
+  <title>3.3 VMS Datasets | Global Fishing Watch Data Standard Operating Procedure</title>
   <meta name="description" content="Standard operating procedures for emLab projects using Global Fishing Watch data" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Global Fishing Watch Data Standard Operating Procedure" />
+  <meta property="og:title" content="3.3 VMS Datasets | Global Fishing Watch Data Standard Operating Procedure" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://emlab-ucsb.github.io/gfw-SOP/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="emlab-ucsb/gfw-SOP" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Global Fishing Watch Data Standard Operating Procedure" />
+  <meta name="twitter:title" content="3.3 VMS Datasets | Global Fishing Watch Data Standard Operating Procedure" />
   
   <meta name="twitter:description" content="Standard operating procedures for emLab projects using Global Fishing Watch data" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
-
-<link rel="next" href="1-basics.html"/>
+<link rel="prev" href="3-2-best-tables.html"/>
+<link rel="next" href="3-4-dark-targets-tables.html"/>
 <script src="assets/jquery-2.2.3/jquery.min.js"></script>
 <link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -102,22 +102,18 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Global Fishing Watch Data Standard Operating Procedure</h1>
-<p class="date"><em>2020-12-02</em></p>
-</div>
-<div id="overview" class="section level1 unnumbered">
-<h1>Overview</h1>
-<p>This reference guide describes standard operating procedures (SOP) for using Global Fishing Watch (GFW) data in emLab projects. This SOP is organized into 5 different sections: (1) Global Fishing Watch Basics, (2) Setup and Access, (3) Data, (4) Workflow, and (5) Additional Resources. Section 1 provides an overview of Global Fishing Watch data; Section 2 covers how to setup BigQuery and access the data; Section 3 describes the core GFW datasets and tables; Section 4 offers suggestions for streamlining workflow between BigQuery and R; and Section 5 highlights additional data training resources.</p>
-
+<div id="vms-datasets" class="section level2">
+<h2><span class="header-section-number">3.3</span> VMS Datasets</h2>
+<p>Country VMS datasets provide reliable vessel tracking with low risks of tampering or transmission gaps since VMS devices generally broadcast at fixed rates and many countries impose strict requirements on VMS use with hefty fines for violations. When available, VMS data can complement AIS data, particularly in regions where AIS reception is poor, allowing for a greater understanding of fishing activity.</p>
+<p>The VMS datasets do not have equivalent research tables like the AIS pipeline does. As a result, the VMS datasets do not have an ‘hours’ field from which to calculate fishing hours. Instead, fishing hours can be calculated using the absolute value of the difference between two timestamps. An example of querying fishing hours from a VMS dataset is provided on the <a href="https://github.com/GlobalFishingWatch/bigquery-documentation-wf827/tree/master/queries/examples/current">GFW GitHub</a>.</p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="1-basics.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="3-2-best-tables.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="3-4-dark-targets-tables.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="assets/gitbook-2.6.7/js/app.min.js"></script>

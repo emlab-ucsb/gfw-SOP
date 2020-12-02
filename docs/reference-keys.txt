@@ -1,7 +1,14 @@
-overview
 basics
+types-of-data
+available-data
+data-caution
 setup-and-access
 bigquery-setup
+billing
 data
+core-ais-datasets-and-assumptions
+best-tables
+vms-datasets
+dark-targets-tables
 workflow
 additional-resources
