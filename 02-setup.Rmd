@@ -13,7 +13,7 @@ BigQuery is part of the Google Cloud Platform (GCP). Details of getting your mac
 
 The BigQuery console provides a nice interface for writing and validating queries. The upper left corner of the BigQuery console displays the billing project code. For most emLab users, this should say `emlab-gcp`. The upper right corner shows the user, make sure you are logged in when running queries. Queries can be written in the query editor window and the validator will tell you how large the query is and will warn you if there are any syntax errors in the query. Once a query is run, the results will be displayed beneath the query editor window. Projects, datasets, and tables are displayed on the left hand side of the console. 
 
-![](images/)
+
 
 ## Billing
 
