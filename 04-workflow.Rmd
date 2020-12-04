@@ -4,3 +4,46 @@ output: html_document
 ---
 
 # Workflow
+
+There are many ways to access and use GFW data and while there is no one set way, this section contains some tips on streamlining workflow between BigQuery and R. Best practices for style and reproducibility in R are outlined in the emLab SOP [Section 4](https://emlab-ucsb.github.io/SOP/4-code.html).  
+
+## Validation with BigQuery
+
+The BigQuery console provides a friendly interface to check for query sizes and to validate queries for syntax errors. Queries can then be copied into markdowns or scripts in R for reproducibility. Queries can be executed in R and data can either be written to a table in the `emlab-gcp` project in BigQuery or downloaded directly to the local R working environment. 
+
+## Using BigQuery in R
+
+There is no single best way to access and use GFW data in R. Below are a few techniques that can be used depending on personal preference and project needs. While it is possible to use GFW data without writing SQL using the `dbplyr` package, this document focuses on workflow to integrate SQL into R. 
+
+BigQuery can understand both Standard and Legacy SQL. Best practice to use *Standard SQL*. BigQuery has a very helpful [Reference Guide](https://cloud.google.com/bigquery/docs/reference) for functions and operators in Standard SQL. In particular, the ‘Functions and Operators’ section, found under the ‘Standard SQL query reference’ heading, contains helpful documentation on a range of functions categorized by type.  
+
+### Authorization 
+
+BigQuery requires authorization to execute functions in R. Running the `bq_auth()` function from the `bigrquery` package in the console will open a new tab in your web browser allowing you to authenticate your credentials. BigQuery will cache your credentials for use in the future, but it is still necessary to run `bq_auth()` each time you start a new Rproject. If you forget to authenticate your credentials before trying to execute a query, BigQuery will produce an error message.   
+
+
+### Accessing Data
+
+When writing SQL data can be accessed using three pieces of information: the project, the dataset, and the table. This should follow the syntax project.dataset.table. Specifying the project first is important. SQL will only be able to find datasets and tables within the billing project (e.g. `emlab-gcp`) if no project is specified. For example when `emlab-gcp` is set as the billing project, trying to access the `eez_info` table using `gfw_research.eez_info` produces an error that the table does not exist. Adding the project first, `world-fishing-827.gfw_research.eez_info` fixes the query. 
+
+Best practice is to always specify the project since this reduces potential errors if others replicate your code using a different billing project.   
+
+
+
+### Writing and Executing Queries
+
+
+
+### Subsetting Data 
+
+
+
+
+### Saving / Downloading BigQuery Tables
+
+
+
+
+
+
+
