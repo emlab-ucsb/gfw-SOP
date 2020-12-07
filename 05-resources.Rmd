@@ -5,6 +5,8 @@ output: html_document
 
 # Additional Resources
 
+This section provides additional resources for using GFW data.    
+
 ## Global Fishing Watch Data Training
 
 The [Global Fishing Watch Data Training](https://drive.google.com/drive/u/0/folders/0AIfysivHdyTgUk9PVA) shared drive is the most up to date place to find comprehensive training resources for using GFW data. If you cannot access the drive, please reach out to Tyler Clavelle at GFW.   

@@ -5,6 +5,8 @@ output: html_document
 
 # Setup and Access
 
+This section covers how to get setup with BigQuery and use the BigQuery console.  
+
 ## BigQuery Setup
 
 BigQuery can be accessed in three ways: through the [BigQuery console](https://console.cloud.google.com/), the BigQuery command line interface, and through BigQuery APIs in Python or R. For more information on using BigQuery in R, refer to Section 4.1. 
