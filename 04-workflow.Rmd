@@ -17,6 +17,8 @@ There is no single best way to access and use GFW data in R. Below are a few tec
 
 BigQuery can understand both Standard and Legacy SQL. Best practice to use *Standard SQL*. BigQuery has a very helpful [Reference Guide](https://cloud.google.com/bigquery/docs/reference) for functions and operators in Standard SQL. In particular, the ‘Functions and Operators’ section, found under the ‘Standard SQL query reference’ heading, contains helpful documentation on a range of functions categorized by type.  
 
+![](images/standard_sql_ref_annotated.png){height="50%" width="50%"}  
+
 ### Authorization 
 
 BigQuery requires authorization to execute functions in R. Running the `bq_auth()` function from the `bigrquery` package in the console will open a new tab in your web browser allowing you to authenticate your credentials. BigQuery will cache your credentials for use in the future, but it is still necessary to run `bq_auth()` each time you start a new Rproject. If you forget to authenticate your credentials before trying to execute a query, BigQuery will produce an error message.   
@@ -26,9 +28,9 @@ BigQuery requires authorization to execute functions in R. Running the `bq_auth(
 
 When writing SQL data can be accessed using three pieces of information: the project, the dataset, and the table. This should follow the syntax project.dataset.table. Specifying the project first is important. SQL will only be able to find datasets and tables within the billing project (e.g. `emlab-gcp`) if no project is specified. For example when `emlab-gcp` is set as the billing project, trying to access the `eez_info` table using `gfw_research.eez_info` produces an error that the table does not exist. Adding the project first, `world-fishing-827.gfw_research.eez_info` fixes the query. 
 
+![](images/table_error_annotated.png){height="50%" width="50%"}  
+
 Best practice is to always specify the project since this reduces potential errors if others replicate your code using a different billing project.   
-
-
 
 ### Writing and Executing Queries
 
@@ -69,18 +71,23 @@ Some queries may be expensive to run and output large amounts of data. To check 
 
 While there are other techniques for subsetting such as using a list of ssvids, specifying flags, or restricting to a certain gear type, these will not reduce the size and cost of the query. Only filtering based on a partitioned column will affect the size of the query. Generally, partitioned tables are noted in BigQuery with a message under the ‘Details’ tab and more information about how the table is partitioned is available in the Table Info.    
 
+![](images/partitioned_annotated.png){height="50%" width="50%"}  
+
 ### Saving / Downloading BigQuery Tables
 
 In some cases you might want to save your query results directly to BigQuery. For example, it may be easier to store large tables in BigQuery than trying to work with large amounts of data in R. A large table can then be further queried and subsetted before working with the data in R. Additionally, it may be useful to store tables in BigQuery if you plan to join them with other data  stored in BigQuery. For instance, a table of spatial boundaries may be useful to store on BigQuery for spatially filtering data from other BigQuery tables to a specific region of interest. Tables can be saved to BigQuery using either `bigrquery::bq_project_query()` or `DBI::dbWriteTable()`. Using the `bq_project_query()` function allows you to execute the query and save the results as a new table in BigQuery in a single step by adding the `destination_table` argument. When using DBI you need to execute the query first and then write the results to the database.   
 
 Datasets and tables should only be created in the `emlab-gcp` project. Datasets need to be created before tables can be saved there and can be created in the BigQuery console or in R using `bq_dataset_create()`. In the BigQuery console datasets can be created by navigating to the `emlab-gcp` project and selecting the ‘Create Dataset’ button. The default settings for creating the dataset are fine to keep, only the dataset name needs to be added. Once the dataset is created, refreshing the window should show the new dataset on the left hand side nested under the `emlab-gcp` project.   
 
+![](images/create_dataset_annotated.png){height="50%" width="50%"}    
 
 Best practices for naming datasets is to use the official project name, the same one used for the GitHub respository, Google Drive, and other project materials. For tables, names should be descriptive and meaningful. It is advised to follow them emLab SOP guidance in [Section 3.1](https://emlab-ucsb.github.io/SOP/3-1-data-file-naming.html) for file naming, specifically using only lower case letters, using '_' to separate words, and avoiding '-', '.' and other special characters.  
 
 [Code example]  
 
 These tables now live in BigQuery. If you return to the BigQuery console and refresh it, you should see the table nested under `emlab-gcp` and the dataset name.  
+
+![](images/add_tables_annotated.png){height="50%" width="50%"}     
 
 These tables can now be called directly in future queries and can be downloaded in R at any time using either `bigrquery::bq_table_download()` or `DBI::dbReadTable()`.  
 
