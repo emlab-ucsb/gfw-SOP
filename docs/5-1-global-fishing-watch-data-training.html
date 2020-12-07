@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2.1 BigQuery Setup | Global Fishing Watch Data Standard Operating Procedure</title>
+  <title>5.1 Global Fishing Watch Data Training | Global Fishing Watch Data Standard Operating Procedure</title>
   <meta name="description" content="Standard operating procedures for emLab projects using Global Fishing Watch data" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2.1 BigQuery Setup | Global Fishing Watch Data Standard Operating Procedure" />
+  <meta property="og:title" content="5.1 Global Fishing Watch Data Training | Global Fishing Watch Data Standard Operating Procedure" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://emlab-ucsb.github.io/gfw-SOP/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="emlab-ucsb/gfw-SOP" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.1 BigQuery Setup | Global Fishing Watch Data Standard Operating Procedure" />
+  <meta name="twitter:title" content="5.1 Global Fishing Watch Data Training | Global Fishing Watch Data Standard Operating Procedure" />
   
   <meta name="twitter:description" content="Standard operating procedures for emLab projects using Global Fishing Watch data" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
-<link rel="prev" href="2-setup-and-access.html"/>
-<link rel="next" href="2-2-billing.html"/>
+<link rel="prev" href="5-additional-resources.html"/>
+<link rel="next" href="5-2-fishwatchr.html"/>
 <script src="assets/jquery-2.2.3/jquery.min.js"></script>
 <link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -114,19 +114,58 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="bigquery-setup" class="section level2">
-<h2><span class="header-section-number">2.1</span> BigQuery Setup</h2>
-<p>BigQuery can be accessed in three ways: through the <a href="https://console.cloud.google.com/">BigQuery console</a>, the BigQuery command line interface, and through BigQuery APIs in Python or R. For more information on using BigQuery in R, refer to Section 4.1.</p>
-<p>BigQuery is part of the Google Cloud Platform (GCP). Details of getting your machine set up with GCP products is covered in the emLab SOP <a href="https://emlab-ucsb.github.io/SOP/5-1-google-cloud-platform.html">Section 5.1</a>. Once gcloud is installed and your credentials are authenticated you should be able to set <code>emlab-gcp</code> as your project which will link you to emLab’s billing account. If you have any problems joining or connecting to <code>emlab-gcp</code>, please get in touch and we will help set you up.</p>
-<p>The BigQuery console provides a nice interface for writing and validating queries. The upper left corner of the BigQuery console displays the billing project code. For most emLab users, this should say <code>emlab-gcp</code>. The upper right corner shows the user, make sure you are logged in when running queries. Queries can be written in the query editor window and the validator will tell you how large the query is and will warn you if there are any syntax errors in the query. Once a query is run, the results will be displayed beneath the query editor window. Projects, datasets, and tables are displayed on the left hand side of the console.</p>
+<div id="global-fishing-watch-data-training" class="section level2">
+<h2><span class="header-section-number">5.1</span> Global Fishing Watch Data Training</h2>
+<p>The <a href="https://drive.google.com/drive/u/0/folders/0AIfysivHdyTgUk9PVA">Global Fishing Watch Data Training</a> shared drive is the most up to date place to find comprehensive training resources for using GFW data. If you cannot access the drive, please reach out to Tyler Clavelle at GFW.</p>
+<p>The <code>Training Slide Decks</code> folder contains a series of Global Fishing Watch Data 101 presentations. These presentations provide a condensed overview of GFW data, how data tables are created, and how to work with the data.</p>
+<ul>
+<li>GFW 101A: Intro to AIS and Vessel Tracking<br />
+</li>
+<li><p>Covers the basics of AIS, the GFW fishing detection model, vessel classes, and VMS</p></li>
+<li>GFW 101B: Data &amp; Algorithms<br />
+</li>
+<li><p>Provides an overview of Global Fishing Watch data including caveats of using the data and an explanation of core datasets</p></li>
+<li>GFW 101C: Working with GFW Data<br />
+</li>
+<li>Covers getting setup with BigQuery, understanding the GFW pipelines and datasets, and provides further training resources<br />
+</li>
+<li><p>There are two versions of this presentation, one for engineers and one for non-engineers. The non-engineering version contains less information about getting setup with BigQuery and slightly simpler explanations of the pipeline</p></li>
+</ul>
+<p>Additionally, the <code>Training Slide Decks/training_slides_current</code> folder contains in depth presentations on 12 topics:</p>
+<ul>
+<li>BigQuery Overview<br />
+</li>
+<li>Intro to AIS Data<br />
+</li>
+<li>GFW Pipeline<br />
+</li>
+<li>Research Tables<br />
+</li>
+<li>Fishing Effort<br />
+</li>
+<li>Vessel Database<br />
+</li>
+<li>Vessel Info Tables<br />
+</li>
+<li>Ports and Voyages<br />
+</li>
+<li>Encounters, Loitering, and Carrier Database<br />
+</li>
+<li>Country VMS<br />
+</li>
+<li>SAR Vessel Detection<br />
+</li>
+<li>VIIRS Vessel Detection</li>
+</ul>
+<p>The GFW <a href="https://github.com/GlobalFishingWatch/bigquery-documentation-wf827">GitHub</a> repository (<code>bigquery-documentation-wf827</code>) includes examples of common queries in <code>queries/examples/current</code>. If you can’t access the repository, please reach out to Tyler Clavelle at GFW.</p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="2-setup-and-access.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="2-2-billing.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="5-additional-resources.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="5-2-fishwatchr.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="assets/gitbook-2.6.7/js/app.min.js"></script>

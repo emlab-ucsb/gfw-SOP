@@ -1,4 +1,4 @@
-basics
+global-fishing-watch-basics
 types-of-data
 available-data
 data-caution
@@ -11,4 +11,13 @@ best-tables
 vms-datasets
 dark-targets-tables
 workflow
+validation-with-bigquery
+using-bigquery-in-r
+authorization
+accessing-data
+writing-and-executing-queries
+subsetting-data
+saving-downloading-bigquery-tables
 additional-resources
+global-fishing-watch-data-training
+fishwatchr

@@ -10,7 +10,7 @@ BigQuery data have a three level structure: projects, datasets, and tables. Ther
 ## Core AIS Datasets and Assumptions
 
 The `world-fishing-827` project has four main AIS datasets for general analysis:  `pipe_production_vYYYYMMDD`, `gfw_research`, `anchorages`, and `vessel_database`. 
-
+<br>  
 `pipe_production_vYYYYMMDD`  
 
 This is GFW’s core internal dataset and is the output of the pipeline, which is a process that automates parsing, cleaning, augmenting, and publishing the raw AIS data. In most cases, queries should use the research tables in `gfw_research` not the pipeline tables. However, the following are some tables that are only found in the pipeline which may be useful to emLab researchers:  
@@ -40,9 +40,9 @@ This is GFW’s core internal dataset and is the output of the pipeline, which i
  * `voyages`  
     + List of voyages by ssvid  
     + Important fields: ssvid, vessel_id, trip_id, trip_start_anchorage_id, trip_end_anchorage_id  
-    + Assumptions: voyages are a port exit/port entry pair, following a vessel from when it leaves a port to the next time it enters a port  
-    
-    
+    + Assumptions: voyages are a port exit/port entry pair, following a vessel from when it leaves a port to the next time it enters a port    
+<br>    
+
 `gfw_research`  
 
 The second dataset `gfw_research`, is most commonly used by GFW research partners. These tables are versions of the pipeline tables that have been altered to make them more suitable and cost effective for analysis. The following are some tables that may be most relevant to emLab researchers: 
@@ -75,7 +75,7 @@ The second dataset `gfw_research`, is most commonly used by GFW research partner
  * `vi_ssvid_byyear_vYYYYMMDD`  
     + Summary of annual vessel activity and identity information by ssvid. This table is best used to summarize vessel activity (like fishing hours) by ssvid if specific position data (lat/lon) are not important. Queries should use good segments and the neural net score from the `pipe_vYYYYMMDD_fishing` table if position data are important  
     + Important fields: ssvid, year, activity records (summary of the amount and location of the vessel's activity), best records (best vessel characteristics)  
-    
+<br>  
 
 `anchorages`  
 
@@ -85,8 +85,8 @@ The GFW data uses anchorages which are different from ports. The anchorage datse
     + List of all named anchorages in the GFW data   
     + Important fields: s2id (anchorage id), iso3, lat, lon  
     + Assumptions: at least 20 vessels remained stationary between 2012 and 2019  
-    
-    
+<br>      
+
 `vessel_database`  
 
 The vessel database is a collection of tables tracking vessel registry information. This database is particularly useful for querying lists of non-fishing vessels, such as carriers. For lists of fishing vessels, it's better to use `gfw_research.fishing_vessels_ssvid_vYYYYMMDD`. The following table may be the most useful to emLab researchers:  

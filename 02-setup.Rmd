@@ -19,5 +19,5 @@ The BigQuery console provides a nice interface for writing and validating querie
 
 ## Billing
 
-Queries cost *$5/ TB*. Best practice is always to use the validator in BigQuery to check the size of the query before running it. Any query over 100 GB should generally be considered large and caution should be taken when running them. Please see Section 4, Workflow, for more suggestions on best practices for streamlining workflow between BigQuery and R. 
+Queries cost **$5/ TB**. Best practice is always to use the validator in BigQuery to check the size of the query before running it. Any query over 100 GB should generally be considered large and caution should be taken when running them. Please see Section 4, Workflow, for more suggestions on best practices for streamlining workflow between BigQuery and R. 
 

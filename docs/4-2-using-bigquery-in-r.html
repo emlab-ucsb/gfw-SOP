@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>4.2 Using BigQuery in R | Global Fishing Watch Data Standard Operating Procedure</title>
+  <meta name="description" content="Standard operating procedures for emLab projects using Global Fishing Watch data" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="4.2 Using BigQuery in R | Global Fishing Watch Data Standard Operating Procedure" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://emlab-ucsb.github.io/gfw-SOP/" />
+  
+  <meta property="og:description" content="Standard operating procedures for emLab projects using Global Fishing Watch data" />
+  <meta name="github-repo" content="emlab-ucsb/gfw-SOP" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="4.2 Using BigQuery in R | Global Fishing Watch Data Standard Operating Procedure" />
+  
+  <meta name="twitter:description" content="Standard operating procedures for emLab projects using Global Fishing Watch data" />
+  
+
+<meta name="author" content="" />
+
+
+<meta name="date" content="2020-12-07" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+<link rel="prev" href="4-1-validation-with-bigquery.html"/>
+<link rel="next" href="5-additional-resources.html"/>
+<script src="assets/jquery-2.2.3/jquery.min.js"></script>
+<link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="assets/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="assets/anchor-sections-1.0/anchor-sections.js"></script>
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="1" data-path="1-global-fishing-watch-basics.html"><a href="1-global-fishing-watch-basics.html"><i class="fa fa-check"></i><b>1</b> Global Fishing Watch Basics</a><ul>
+<li class="chapter" data-level="1.1" data-path="1-1-types-of-data.html"><a href="1-1-types-of-data.html"><i class="fa fa-check"></i><b>1.1</b> Types of Data</a></li>
+<li class="chapter" data-level="1.2" data-path="1-2-available-data.html"><a href="1-2-available-data.html"><i class="fa fa-check"></i><b>1.2</b> Available Data</a></li>
+<li class="chapter" data-level="1.3" data-path="1-3-data-caution.html"><a href="1-3-data-caution.html"><i class="fa fa-check"></i><b>1.3</b> Data Caution</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="2-setup-and-access.html"><a href="2-setup-and-access.html"><i class="fa fa-check"></i><b>2</b> Setup and Access</a><ul>
+<li class="chapter" data-level="2.1" data-path="2-1-bigquery-setup.html"><a href="2-1-bigquery-setup.html"><i class="fa fa-check"></i><b>2.1</b> BigQuery Setup</a></li>
+<li class="chapter" data-level="2.2" data-path="2-2-billing.html"><a href="2-2-billing.html"><i class="fa fa-check"></i><b>2.2</b> Billing</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="3-data.html"><a href="3-data.html"><i class="fa fa-check"></i><b>3</b> Data</a><ul>
+<li class="chapter" data-level="3.1" data-path="3-1-core-ais-datasets-and-assumptions.html"><a href="3-1-core-ais-datasets-and-assumptions.html"><i class="fa fa-check"></i><b>3.1</b> Core AIS Datasets and Assumptions</a></li>
+<li class="chapter" data-level="3.2" data-path="3-2-best-tables.html"><a href="3-2-best-tables.html"><i class="fa fa-check"></i><b>3.2</b> Best Tables</a></li>
+<li class="chapter" data-level="3.3" data-path="3-3-vms-datasets.html"><a href="3-3-vms-datasets.html"><i class="fa fa-check"></i><b>3.3</b> VMS Datasets</a></li>
+<li class="chapter" data-level="3.4" data-path="3-4-dark-targets-tables.html"><a href="3-4-dark-targets-tables.html"><i class="fa fa-check"></i><b>3.4</b> Dark Targets Tables</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="4-workflow.html"><a href="4-workflow.html"><i class="fa fa-check"></i><b>4</b> Workflow</a><ul>
+<li class="chapter" data-level="4.1" data-path="4-1-validation-with-bigquery.html"><a href="4-1-validation-with-bigquery.html"><i class="fa fa-check"></i><b>4.1</b> Validation with BigQuery</a></li>
+<li class="chapter" data-level="4.2" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html"><i class="fa fa-check"></i><b>4.2</b> Using BigQuery in R</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#authorization"><i class="fa fa-check"></i><b>4.2.1</b> Authorization</a></li>
+<li class="chapter" data-level="4.2.2" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#accessing-data"><i class="fa fa-check"></i><b>4.2.2</b> Accessing Data</a></li>
+<li class="chapter" data-level="4.2.3" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#writing-and-executing-queries"><i class="fa fa-check"></i><b>4.2.3</b> Writing and Executing Queries</a></li>
+<li class="chapter" data-level="4.2.4" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#subsetting-data"><i class="fa fa-check"></i><b>4.2.4</b> Subsetting Data</a></li>
+<li class="chapter" data-level="4.2.5" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#saving-downloading-bigquery-tables"><i class="fa fa-check"></i><b>4.2.5</b> Saving / Downloading BigQuery Tables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="5-additional-resources.html"><a href="5-additional-resources.html"><i class="fa fa-check"></i><b>5</b> Additional Resources</a><ul>
+<li class="chapter" data-level="5.1" data-path="5-1-global-fishing-watch-data-training.html"><a href="5-1-global-fishing-watch-data-training.html"><i class="fa fa-check"></i><b>5.1</b> Global Fishing Watch Data Training</a></li>
+<li class="chapter" data-level="5.2" data-path="5-2-fishwatchr.html"><a href="5-2-fishwatchr.html"><i class="fa fa-check"></i><b>5.2</b> Fishwatchr</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Global Fishing Watch Data Standard Operating Procedure</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="using-bigquery-in-r" class="section level2">
+<h2><span class="header-section-number">4.2</span> Using BigQuery in R</h2>
+<p>There is no single best way to access and use GFW data in R. Below are a few techniques that can be used depending on personal preference and project needs. While it is possible to use GFW data without writing SQL using the <code>dbplyr</code> package, this document focuses on workflow to integrate SQL into R.</p>
+<p>BigQuery can understand both Standard and Legacy SQL. Best practice to use <em>Standard SQL</em>. BigQuery has a very helpful <a href="https://cloud.google.com/bigquery/docs/reference">Reference Guide</a> for functions and operators in Standard SQL. In particular, the ‘Functions and Operators’ section, found under the ‘Standard SQL query reference’ heading, contains helpful documentation on a range of functions categorized by type.</p>
+<div id="authorization" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Authorization</h3>
+<p>BigQuery requires authorization to execute functions in R. Running the <code>bq_auth()</code> function from the <code>bigrquery</code> package in the console will open a new tab in your web browser allowing you to authenticate your credentials. BigQuery will cache your credentials for use in the future, but it is still necessary to run <code>bq_auth()</code> each time you start a new Rproject. If you forget to authenticate your credentials before trying to execute a query, BigQuery will produce an error message.</p>
+</div>
+<div id="accessing-data" class="section level3">
+<h3><span class="header-section-number">4.2.2</span> Accessing Data</h3>
+<p>When writing SQL data can be accessed using three pieces of information: the project, the dataset, and the table. This should follow the syntax project.dataset.table. Specifying the project first is important. SQL will only be able to find datasets and tables within the billing project (e.g. <code>emlab-gcp</code>) if no project is specified. For example when <code>emlab-gcp</code> is set as the billing project, trying to access the <code>eez_info</code> table using <code>gfw_research.eez_info</code> produces an error that the table does not exist. Adding the project first, <code>world-fishing-827.gfw_research.eez_info</code> fixes the query.</p>
+<p>Best practice is to always specify the project since this reduces potential errors if others replicate your code using a different billing project.</p>
+</div>
+<div id="writing-and-executing-queries" class="section level3">
+<h3><span class="header-section-number">4.2.3</span> Writing and Executing Queries</h3>
+<p>There are two main methods for executing SQL in R. One is to write the SQL query as a string and then execute it using the bigrquery or DBI packages. The second is to use an SQL chunk within your markdown or notebook. The following libraries are useful for accessing GFW data: <code>DBI</code>, <code>bigrquery</code>, <code>glue</code>.</p>
+<p><em>Writing Queries as Strings</em></p>
+<p>Queries can be written as strings in R. Best practice is to avoid looped or nested queries and instead use subqueries. Subqueries can be written using ‘WITH’ statements.</p>
+<p>[Code example]</p>
+<p>Using <code>glue::glue_sql()</code> allows for substitution of R variables into the query.</p>
+<p>[Code example]</p>
+<p>The queries can be run using the <code>bigrquery</code> package or the <code>DBI</code> package. When using <code>bigrquery</code>, the <code>bq_project_query()</code> function enables you to run the query and only requires the billing code and the query string. This function will not download the results of your query. To run the query and download results locally you can combine the <code>bq_project_query()</code> and <code>bq_table_download()</code> functions. More information is available in the package <a href="https://cran.r-project.org/web/packages/bigrquery/bigrquery.pdf">documentation</a>.</p>
+<p>[Code example]</p>
+<p>A second option is to connect to BigQuery using the <code>DBI</code> package. When using DBI you first setup the connection using <code>dbConnect()</code> and then you can run your query using <code>dbGetQuery()</code>. More information about <code>DBI</code> is available in the package <a href="https://cran.r-project.org/web/packages/DBI/DBI.pdf">documentation</a>.</p>
+<p>[Code example]</p>
+<p><em>Using SQL Chunks</em></p>
+<p>Both R markdown and R notebooks allow for integration of prose and different programming languages, such as python or SQL, within one document. Selecting “Insert → SQL” will add a code chunk to the document and enable you to write in SQL directly instead of saving the query as a string. Note you may need to change your settings to ‘Chunk output inline’ if using R markdown to ensure you can view the results of your queries without knitting the document.</p>
+<p>When using SQL code chunks, it is important to specify the database connection and the output variable within the top of the code chunk. The database connection is established in the same way as shown above with <code>DBI::dbConnect()</code>.</p>
+<p>[Code example]</p>
+</div>
+<div id="subsetting-data" class="section level3">
+<h3><span class="header-section-number">4.2.4</span> Subsetting Data</h3>
+<p>Some queries may be expensive to run and output large amounts of data. To check results from queries or to make sure they work correctly, it may be necessary to subset the data. Tables that are partitioned are divided up into smaller segments and can be easily subsetted to reduce query size and cost. A common technique for subsetting data is to restrict the date range to a single day. This can be accomplished using WHERE plus a date filter (like _PARTIONTIME) although the specific notation will depend on if the data are represented as a date or a timestamp. Partitioned tables are noted in Section 3 and more information on partitioned tables can be found in the BigQuery <a href="https://cloud.google.com/bigquery/docs/partitioned-tables?_ga=2.76664789.-1147900105.1599252261">documentation</a>.</p>
+<p>[Code example]</p>
+<p>While there are other techniques for subsetting such as using a list of ssvids, specifying flags, or restricting to a certain gear type, these will not reduce the size and cost of the query. Only filtering based on a partitioned column will affect the size of the query. Generally, partitioned tables are noted in BigQuery with a message under the ‘Details’ tab and more information about how the table is partitioned is available in the Table Info.</p>
+</div>
+<div id="saving-downloading-bigquery-tables" class="section level3">
+<h3><span class="header-section-number">4.2.5</span> Saving / Downloading BigQuery Tables</h3>
+<p>In some cases you might want to save your query results directly to BigQuery. For example, it may be easier to store large tables in BigQuery than trying to work with large amounts of data in R. A large table can then be further queried and subsetted before working with the data in R. Additionally, it may be useful to store tables in BigQuery if you plan to join them with other data stored in BigQuery. For instance, a table of spatial boundaries may be useful to store on BigQuery for spatially filtering data from other BigQuery tables to a specific region of interest. Tables can be saved to BigQuery using either <code>bigrquery::bq_project_query()</code> or <code>DBI::dbWriteTable()</code>. Using the <code>bq_project_query()</code> function allows you to execute the query and save the results as a new table in BigQuery in a single step by adding the <code>destination_table</code> argument. When using DBI you need to execute the query first and then write the results to the database.</p>
+<p>Datasets and tables should only be created in the <code>emlab-gcp</code> project. Datasets need to be created before tables can be saved there and can be created in the BigQuery console or in R using <code>bq_dataset_create()</code>. In the BigQuery console datasets can be created by navigating to the <code>emlab-gcp</code> project and selecting the ‘Create Dataset’ button. The default settings for creating the dataset are fine to keep, only the dataset name needs to be added. Once the dataset is created, refreshing the window should show the new dataset on the left hand side nested under the <code>emlab-gcp</code> project.</p>
+<p>Best practices for naming datasets is to use the official project name, the same one used for the GitHub respository, Google Drive, and other project materials. For tables, names should be descriptive and meaningful. It is advised to follow them emLab SOP guidance in <a href="https://emlab-ucsb.github.io/SOP/3-1-data-file-naming.html">Section 3.1</a> for file naming, specifically using only lower case letters, using ’_’ to separate words, and avoiding ‘-’, ‘.’ and other special characters.</p>
+<p>[Code example]</p>
+<p>These tables now live in BigQuery. If you return to the BigQuery console and refresh it, you should see the table nested under <code>emlab-gcp</code> and the dataset name.</p>
+<p>These tables can now be called directly in future queries and can be downloaded in R at any time using either <code>bigrquery::bq_table_download()</code> or <code>DBI::dbReadTable()</code>.</p>
+<p>[Code example]</p>
+<p>It is important to remember to save any data at the end of the R session to avoid having to re-run ueries every time you open the project.</p>
+
+</div>
+</div>
+<!-- </div> -->
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="4-1-validation-with-bigquery.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="5-additional-resources.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="assets/gitbook-2.6.7/js/app.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/lunr.js"></script>
+<script src="assets/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="assets/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "static"
+},
+"search": true
+});
+});
+</script>
+
+</body>
+
+</html>
