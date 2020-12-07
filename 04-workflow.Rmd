@@ -32,18 +32,60 @@ Best practice is to always specify the project since this reduces potential erro
 
 ### Writing and Executing Queries
 
+There are two main methods for executing SQL in R. One is to write the SQL query as a string and then execute it using the bigrquery or DBI packages. The second is to use an SQL chunk within your markdown or notebook. The following libraries are useful for accessing GFW data: `DBI`, `bigrquery`, `glue`.  
+
+*Writing Queries as Strings*    
+
+Queries can be written as strings in R. Best practice is to avoid looped or nested queries and instead use subqueries. Subqueries can be written using ‘WITH’ statements. 
+
+[Code example]  
+
+Using `glue::glue_sql()` allows for substitution of R variables into the query. 
+
+[Code example]  
+
+The queries can be run using the `bigrquery` package or the `DBI` package. When using `bigrquery`, the `bq_project_query()` function enables you to run the query and only requires the billing code and the query string. This function will not download the results of your query. To run the query and download results locally you can combine the `bq_project_query()` and `bq_table_download()` functions. More information is available in the package [documentation](https://cran.r-project.org/web/packages/bigrquery/bigrquery.pdf).  
+
+[Code example]  
+
+A second option is to connect to BigQuery using the `DBI` package. When using DBI you first setup the connection using `dbConnect()` and then you can run your query using `dbGetQuery()`. More information about `DBI` is available in the package [documentation](https://cran.r-project.org/web/packages/DBI/DBI.pdf).  
+
+[Code example]  
+
+*Using SQL Chunks*  
+
+Both R markdown and R notebooks allow for integration of prose and different programming languages, such as python or SQL, within one document. Selecting “Insert → SQL” will add a code chunk to the document and enable you to write in SQL directly instead of saving the query as a string. Note you may need to change your settings to ‘Chunk output inline’ if using R markdown to ensure you can view the results of your queries without knitting the document. 
+
+When using SQL code chunks, it is important to specify the database connection and the output variable within the top of the code chunk. The database connection is established in the same way as shown above with `DBI::dbConnect()`. 
+
+[Code example]  
 
 
 ### Subsetting Data 
 
+Some queries may be expensive to run and output large amounts of data. To check results from queries or to make sure they work correctly, it may be necessary to subset the data. Tables that are partitioned are divided up into smaller segments and can be easily subsetted to reduce query size and cost. A common technique for subsetting data is to restrict the date range to a single day. This can be accomplished using WHERE plus a date filter (like _PARTIONTIME) although the specific notation will depend on if the data are represented as a date or a timestamp. Partitioned tables are noted in Section 3 and more information on partitioned tables can be found in the BigQuery [documentation](https://cloud.google.com/bigquery/docs/partitioned-tables?_ga=2.76664789.-1147900105.1599252261).  
 
+[Code example]  
 
+While there are other techniques for subsetting such as using a list of ssvids, specifying flags, or restricting to a certain gear type, these will not reduce the size and cost of the query. Only filtering based on a partitioned column will affect the size of the query. Generally, partitioned tables are noted in BigQuery with a message under the ‘Details’ tab and more information about how the table is partitioned is available in the Table Info.    
 
 ### Saving / Downloading BigQuery Tables
 
+In some cases you might want to save your query results directly to BigQuery. For example, it may be easier to store large tables in BigQuery than trying to work with large amounts of data in R. A large table can then be further queried and subsetted before working with the data in R. Additionally, it may be useful to store tables in BigQuery if you plan to join them with other data  stored in BigQuery. For instance, a table of spatial boundaries may be useful to store on BigQuery for spatially filtering data from other BigQuery tables to a specific region of interest. Tables can be saved to BigQuery using either `bigrquery::bq_project_query()` or `DBI::dbWriteTable()`. Using the `bq_project_query()` function allows you to execute the query and save the results as a new table in BigQuery in a single step by adding the `destination_table` argument. When using DBI you need to execute the query first and then write the results to the database.   
+
+Datasets and tables should only be created in the `emlab-gcp` project. Datasets need to be created before tables can be saved there and can be created in the BigQuery console or in R using `bq_dataset_create()`. In the BigQuery console datasets can be created by navigating to the `emlab-gcp` project and selecting the ‘Create Dataset’ button. The default settings for creating the dataset are fine to keep, only the dataset name needs to be added. Once the dataset is created, refreshing the window should show the new dataset on the left hand side nested under the `emlab-gcp` project.   
 
 
+Best practices for naming datasets is to use the official project name, the same one used for the GitHub respository, Google Drive, and other project materials. For tables, names should be descriptive and meaningful. It is advised to follow them emLab SOP guidance in [Section 3.1](https://emlab-ucsb.github.io/SOP/3-1-data-file-naming.html) for file naming, specifically using only lower case letters, using '_' to separate words, and avoiding '-', '.' and other special characters.  
 
+[Code example]  
+
+These tables now live in BigQuery. If you return to the BigQuery console and refresh it, you should see the table nested under `emlab-gcp` and the dataset name.  
+
+These tables can now be called directly in future queries and can be downloaded in R at any time using either `bigrquery::bq_table_download()` or `DBI::dbReadTable()`.  
+[Code example]  
+
+It is important to remember to save any data at the end of the R session to avoid having to re-run ueries every time you open the project.  
 
 
 

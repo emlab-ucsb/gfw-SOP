@@ -5,3 +5,41 @@ output: html_document
 
 # Additional Resources
 
+## Global Fishing Watch Data Training
+
+The [Global Fishing Watch Data Training](https://drive.google.com/drive/u/0/folders/0AIfysivHdyTgUk9PVA) shared drive is the most up to date place to find comprehensive training resources for using GFW data. If you cannot access the drive, please reach out to Tyler Clavelle at GFW.   
+
+The `Training Slide Decks` folder contains a series of Global Fishing Watch Data 101 presentations. These presentations provide a condensed overview of GFW data, how data tables are created, and how to work with the data.   
+
+ * GFW 101A: Intro to AIS and Vessel Tracking   
+  + Covers the basics of AIS, the GFW fishing detection model, vessel classes, and VMS  
+  
+ * GFW 101B: Data & Algorithms   
+  + Provides an overview of Global Fishing Watch data including caveats of using the data and an explanation of core datasets  
+  
+ * GFW 101C: Working with GFW Data  
+  + Covers getting setup with BigQuery, understanding the GFW pipelines and datasets, and provides further training resources  
+  + There are two versions of this presentation, one for engineers and one for non-engineers. The non-engineering version contains less information about getting setup with BigQuery and slightly simpler explanations of the pipeline  
+  
+  
+Additionally, the `Training Slide Decks/training_slides_current` folder contains in depth presentations on 12 topics:   
+
+  * BigQuery Overview  
+  * Intro to AIS Data  
+  * GFW Pipeline  
+  * Research Tables  
+  * Fishing Effort  
+  * Vessel Database  
+  * Vessel Info Tables  
+  * Ports and Voyages  
+  * Encounters, Loitering, and Carrier Database  
+  * Country VMS  
+  * SAR Vessel Detection  
+  * VIIRS Vessel Detection  
+  
+The GFW [GitHub](https://github.com/GlobalFishingWatch/bigquery-documentation-wf827) repository (`bigquery-documentation-wf827`) includes examples of common queries in `queries/examples/current`. If you can't access the repository, please reach out to Tyler Clavelle at GFW.  
+
+
+## Fishwatchr
+
+GFW has recently developed an R package called *Fishwatchr*  to help with graphing and mapping GFW data. The package contains predefined `ggplot2` themes and color palettes as well as simplified functions for plotting data. The package is hosted on [GitHub](https://github.com/GlobalFishingWatch/fishwatchr) and can be installed following the instructions in the documentation. The package was first released in Fall 2020 and is being continually improved and updated. Any problems or suggestions can be sent to the GFW team using the repository's [Issues](https://github.com/GlobalFishingWatch/fishwatchr/issues) page.  
