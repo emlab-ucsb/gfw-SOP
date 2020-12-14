@@ -2,6 +2,11 @@
 title: "Workflow"
 output: html_document
 ---
+```{r packages, include=F, warning=F, message=F}
+library(bigrquery)
+library(glue)
+library(DBI)
+```
 
 # Workflow
 
@@ -40,27 +45,253 @@ There are two main methods for executing SQL in R. One is to write the SQL query
 
 Queries can be written as strings in R. Best practice is to avoid looped or nested queries and instead use subqueries. Subqueries can be written using ‘WITH’ statements. 
 
-[Code example]  
+```{r example-query, message=F, warning=F}
+#############################################################
+# Example Query: Find which EEZs vessels fished in 
+# Description:
+# This query uses the vessel info table to identify all vessels
+# that fished in China each year and how much they fished.
+#############################################################
 
-Using `glue::glue_sql()` allows for substitution of R variables into the query. 
+sql_vessels_in_china <- "#StandardSQL
 
-[Code example]  
+WITH
 
-The queries can be run using the `bigrquery` package or the `DBI` package. When using `bigrquery`, the `bq_project_query()` function enables you to run the query and only requires the billing code and the query string. This function will not download the results of your query. To run the query and download results locally you can combine the `bq_project_query()` and `bq_table_download()` functions. More information is available in the package [documentation](https://cran.r-project.org/web/packages/bigrquery/bigrquery.pdf).  
+  ###############################
+  # Get EEZ ID and info  
+  
+  eez_names AS (
+  SELECT
+    CAST(eez_id AS STRING) AS eez,
+    reporting_name,
+    sovereign1_iso3 AS eez_iso3
+  FROM
+    `world-fishing-827.gfw_research.eez_info`),
 
-[Code example]  
+  ###############################
+  # Get EEZ fishing summary from activity.eez array 
+  
+  eez_fishing AS (
+  SELECT
+    ssvid,
+    year,
+    best.best_flag,
+    best.best_vessel_class,
+    value AS eez,
+    fishing_hours
+  FROM
+    `world-fishing-827.gfw_research.vi_ssvid_byyear_v20200801`
+  CROSS JOIN
+    UNNEST(activity.eez)
+  WHERE on_fishing_list_best),
 
-A second option is to connect to BigQuery using the `DBI` package. When using DBI you first setup the connection using `dbConnect()` and then you can run your query using `dbGetQuery()`. More information about `DBI` is available in the package [documentation](https://cran.r-project.org/web/packages/DBI/DBI.pdf).  
+  ###############################
+  # Join country name to EEZ id
+  
+  eez_fishing_labeled AS (
+  SELECT
+    *
+  FROM
+    eez_fishing
+  JOIN
+    eez_names
+  USING
+    (eez)),
 
-[Code example]  
+  ###############################
+  # Filter to fishing in China using ISO3
+
+  chn_fishing AS (
+  SELECT
+    * 
+  FROM
+    eez_fishing_labeled 
+  WHERE
+    eez_iso3 = 'CHN'
+    AND fishing_hours > 0)
+
+  ###############################
+  
+  SELECT * FROM chn_fishing"
+
+```
+
+
+The query can be run using the `bigrquery` package or the `DBI` package. When using `bigrquery`, the `bq_project_query()` function enables you to run the query and only requires the billing code and the query string. This function will not download the results of your query. To run the query and download results locally you can combine the `bq_project_query()` and `bq_table_download()` functions. More information is available in the package [documentation](https://cran.r-project.org/web/packages/bigrquery/bigrquery.pdf).  
+
+```{r run-query-bigrquery, eval=F}
+# Run query only - stores results to a temporary table in BigQuery
+bq_project_query("emlab-gcp", sql_vessels_in_china)
+
+# Run query and download results
+vessels_in_china <- bq_project_query("emlab-gcp", sql_vessels_in_china) %>% 
+  bq_table_download(max_results = Inf)
+```
+
+
+A second option is to connect to BigQuery using the `DBI` package. When using DBI you first setup the connection using `dbConnect()` and then you can run your query using `dbGetQuery()`. The connection requires the driver (BigQuery), project name, and billing code. More information about `DBI` is available in the package [documentation](https://cran.r-project.org/web/packages/DBI/DBI.pdf).  
+
+```{r run-query-dbi, eval=F}
+# Set up connection
+bq_connection <- dbConnect(
+    bigquery(),
+    project = "world-fishing-827",
+    billing = "emlab-gcp"
+)
+
+# Run query 
+vessels_in_china <- dbGetQuery(bq_connection, sql_vessels_in_china)
+```
+
+*Writing Queries using glue*  
+
+Using `glue::glue_sql()` allows for substitution of R variables into the query. This might be useful if, for example, you want to run the same query for different years. Using `glue_sql()` requires adding the connection using the `.con` arguument after the query string. The connection is established in the same way as above, using `dbConnect()`. The query can then be run using either `DBI` or `bigrquery` as shown above. Be aware of proper syntax: substituting characters requires using back ticks ` `, such as {`variable`}, but numbers or integers don't, {variable}.    
+
+```{r example-with-glue, message=F, warning=F}
+#############################################################
+# Example Query: Find which EEZs vessels fished in annually 
+# Description:
+# This query uses the vessel info table to identify all vessels
+# that fished in China in 2019 and how much they fished.
+#############################################################
+
+
+# Define variables
+country <- 'CHN'
+year    <- 2019
+
+# Write query
+
+sql_vessels_in_china <- glue_sql("#StandardSQL
+
+WITH
+
+  ###############################
+  # Get EEZ ID and info  
+  
+  eez_names AS (
+  SELECT
+    CAST(eez_id AS STRING) AS eez,
+    reporting_name,
+    sovereign1_iso3 AS eez_iso3
+  FROM
+    `world-fishing-827.gfw_research.eez_info`),
+
+  ###############################
+  # Get EEZ fishing summary from activity.eez array 
+  
+  eez_fishing AS (
+  SELECT
+    ssvid,
+    year,
+    best.best_flag,
+    best.best_vessel_class,
+    value AS eez,
+    fishing_hours
+  FROM
+    `world-fishing-827.gfw_research.vi_ssvid_byyear_v20200801`
+  CROSS JOIN
+    UNNEST(activity.eez)
+  WHERE on_fishing_list_best
+  AND year = {year}),
+
+  ###############################
+  # Join country name to EEZ id
+  
+  eez_fishing_labeled AS (
+  SELECT
+    *
+  FROM
+    eez_fishing
+  JOIN
+    eez_names
+  USING
+    (eez)),
+
+  ###############################
+  # Filter to fishing in China using ISO3
+
+  chn_fishing AS (
+  SELECT
+    * 
+  FROM
+    eez_fishing_labeled 
+  WHERE
+    eez_iso3 = {`country`}
+    AND fishing_hours > 0)
+
+  ###############################
+  
+  SELECT * FROM chn_fishing", .con = bq_connection)
+
+# Run query 
+vessels_in_china_2019 <- bq_project_query("emlab-gcp", sql_vessels_in_china) %>% 
+  bq_table_download(max_results = Inf)
+```
+ 
 
 *Using SQL Chunks*  
 
-Both R markdown and R notebooks allow for integration of prose and different programming languages, such as python or SQL, within one document. Selecting “Insert → SQL” will add a code chunk to the document and enable you to write in SQL directly instead of saving the query as a string. Note you may need to change your settings to ‘Chunk output inline’ if using R markdown to ensure you can view the results of your queries without knitting the document. 
+Both R markdown and R notebooks allow for integration of prose and different programming languages, such as python or SQL, within one document. Selecting “Insert → SQL” will add a code chunk to the document and enable you to write in SQL directly instead of saving the query as a string. In SQL chunks instead of using # to annotate, comments should be enclosed by `/* */` (i.e. `/* Comment */`). 
 
-When using SQL code chunks, it is important to specify the database connection and the output variable within the top of the code chunk. The database connection is established in the same way as shown above with `DBI::dbConnect()`. 
+When using SQL code chunks, it is important to specify the database connection and the output variable within the top of the code chunk. The database connection is established in the same way as shown above with `DBI::dbConnect()`. After running the code chunk, the results should appear in the enviroment using the name of the output variable. 
 
-[Code example]  
+```{sql connection=bq_connection, output.var = 'vessels_in_china'}
+WITH
+
+  /* Get EEZ id and info */
+  
+  eez_names AS (
+  SELECT
+    CAST(eez_id AS STRING) AS eez,
+    reporting_name,
+    sovereign1_iso3 AS eez_iso3
+  FROM
+    `world-fishing-827.gfw_research.eez_info`),
+
+  /* Get EEZ fishing summary from activity.eez array */
+  
+  eez_fishing AS (
+  SELECT
+    ssvid,
+    year,
+    best.best_flag,
+    best.best_vessel_class,
+    value AS eez,
+    fishing_hours
+  FROM
+    `world-fishing-827.gfw_research.vi_ssvid_byyear_v20200801`
+  CROSS JOIN
+    UNNEST(activity.eez)
+  WHERE on_fishing_list_best),
+
+  /* Join country name to EEZ id */
+  
+  eez_fishing_labeled AS (
+  SELECT
+    *
+  FROM
+    eez_fishing
+  JOIN
+    eez_names
+  USING
+    (eez)),
+
+  /* Filter to fishing in China using ISO3 */
+
+  chn_fishing AS (
+  SELECT
+    * 
+  FROM
+    eez_fishing_labeled 
+  WHERE
+    eez_iso3 = 'CHN'
+    AND fishing_hours > 0)
+
+  /* Select the final query */ 
+  
+  SELECT * FROM chn_fishing
+```
 
 
 ### Subsetting Data 
