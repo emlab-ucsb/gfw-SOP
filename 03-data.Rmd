@@ -5,11 +5,11 @@ output: html_document
 
 # Data 
 
-BigQuery data have a three level structure: projects, datasets, and tables. There are two main projects that you should have access to: `world-fishing-827` and `emlab-gcp`. The GFW data lives in the `world-fishing-827` project and core datasets and tables are discussed further below. The `emlab-gcp` project is where any scratch datasets and tables should be saved. Functions to create and save tables to BigQuery are detailed in Section 4.2.3. No direct changes should ever be made to GFW datasets or tables in the `world-fishing-827` project.  
+BigQuery data have a three level structure: projects, datasets, and tables. There are two main projects that you should have access to: `world-fishing-827` and `emlab-gcp`. The GFW data lives in the `world-fishing-827` project and core datasets and tables are discussed further below. The `emlab-gcp` project is where any scratch datasets and project specific tables should be saved. Functions to create and save tables to BigQuery are detailed in Section 4.2.3. No direct changes should be made to GFW datasets or tables in the `world-fishing-827` project.  
 
 ## Core AIS Datasets and Assumptions
 
-The `world-fishing-827` project has four main AIS datasets for general analysis:  `pipe_production_vYYYYMMDD`, `gfw_research`, `anchorages`, and `vessel_database`. 
+The `world-fishing-827` project has many datasets but the following five are the most commonly used:  `pipe_production_vYYYYMMDD`, `pipe_static`, `gfw_research`, `anchorages`, and `vessel_database`. 
 <br>  
 `pipe_production_vYYYYMMDD`  
 
@@ -17,32 +17,39 @@ This is GFW’s core internal dataset and is the output of the pipeline, which i
 
  * `port_events_YYYYMMDD`  
     + List of port events by vessel id (not ssvid)  
-    + Important fields: vessel_id, timestamp, anchorage_id  
+    + Important fields: vessel_id, start_timestamp, end_timestamp, start_anchorage_id , end_anchorage_id     
+    + Relationship to other tables: match the `vessel_id` to the `vessel_id` field of the `pipe_production_vYYYYMMDD.vessel_info` table to obtain an `ssvid`. The `ssvid` can then be used to relate port events to other AIS data such as vessel tracks or characteristics. Match the start or end `anchorage_id` to the `s2id` in the `anchorages.named_anchorages_vYYYYMMDD` table to obtain information for the anchorages such as location, name, and EEZ          
     + Assumptions: Port events are individual events composed of a port entry/port exit pair. A port entry occurs when the vessel comes within 3 km of an anchorage point and the port exit occurs when the vessel is more than 4 km from an anchorage point  
     + The port events table is organized daily. To select all events from a year (for example 2020) use `world-fishing-827.pipe_production_vYYYYMMDD.port_events_2020*`, or select a single day (for example 1.1.20) to reduce query size and cost using `world-fishing-827.pipe_production_vYYYYMMDD.port_events_20200101`  
     
- * `port_visits_YYYYMMDD`  
-    + List of port visits by vessel id (not ssvid)  
-    + Important fields: vessel_id, start_anchorage_id, end_anchorage_id, start_timestamp, end_timestamp   
-    + Assumptions: port visits must include a port entry, a port stop or a port gap, and  a port exit. Port stops begin when the vessel speed is < 0.2 knots and ends when the vessel speed is > 0.5 knots. Port gaps are defined as gaps in AIS transmission for more than 4 hours   
-    + The port visits table is also organized daily and can be subsetted and queried in the same way as the port events table  
-    
  * `published_events_encounters`  
-    + List of encounter events; each encounter event is listed twice with the event_id field ending in .1 or .2 to distinguish between the first and second vessel involved  
-    + Important fields: event_id, vessel_id, event_start, event_end  
-    + Assumptions: 2 vessels within 500 meters of each other, traveling < 2 knots, minimum duration of 2 hours, and at least 10 km from a coastal anchorage  
-    
- * `spatial_measures_YYYYMMDD`  
-    + Spatial information (for EEZs, RMFOs etc.) by gridded longitude, latitude   
-    + Important fields: gridcode, regions record  
-    + Assumptions: Gridded longitude, latitude (WGS84) at 0.01 resolution  
+    + List of encounter events; each encounter event is listed twice with the `event_id` field ending in .1 or .2 to distinguish between the first and second vessel involved  
+    + Important fields: event_id, vessel_id, event_start, event_end, event_info, lat_mean, lon_mean  
+    + Relationship to other tables: match the `vessel_id` to the `vessel_id` field of the `pipe_production_vYYYYMMDD.vessel_info` table to obtain an `ssvid`. The `ssvid` can then be used to relate encounters to other AIS data such as vessel tracks or characteristics  
+    + Assumptions: 2 vessels within 500 meters of each other, traveling < 2 knots, minimum duration of 2 hours, and at least 10 km from a coastal anchorage. Encounter events and loitering events may overlap (i.e. if a vessel's behavior fits the loitering definition and within the same timeframe there is an encounter event it will be listed on both tables representing the same possible transshipment event)      
     
  * `voyages`  
     + List of voyages by ssvid  
-    + Important fields: ssvid, vessel_id, trip_id, trip_start_anchorage_id, trip_end_anchorage_id  
+    + Important fields: ssvid, vessel_id, trip_id, trip_start_anchorage_id, trip_end_anchorage_id, trip_start, trip_end   
+    + Relationship to other tables: `ssvid` can be used to relate the vessel to other AIS data such as vessel tracks or characteristics. The start or end `trip_anchorage_id` can be matched to the `s2id` in the `anchorages.named_anchorages_vYYYYMMDD` table to obtain information on the anchorages such as location, name, and EEZ    
     + Assumptions: voyages are a port exit/port entry pair, following a vessel from when it leaves a port to the next time it enters a port    
 <br>    
+`pipe_static`  
 
+These are static data tables used by the GFW data pipeline. These are sources that change infrequently and are generally used as lookup tables in the pipeline but which may also be useful as lookup tables in emLab projects.  
+
+ * `regions`  
+    + Region information (for EEZs, RMFOs, FAO region, MPAs etc.) for each longitude, latitude grid cell     
+    + Important fields: gridcode, regions.eez, regions.mpant, regions.mparu, regions.rfmo, regions.major_fao  
+    + Relationship to other tables: the gridded lon/lat can be used to spatially join the table to other AIS data of the same resolution  
+    + Assumptions: Gridded longitude, latitude (WGS84) at 0.01 resolution  
+
+ * `spatial_measures`  
+    + Distance from shore and depth for each longitude, latitude grid cell   
+    + Important fields: gridcode, distance_from_shore_m, elevation_m  
+    + Relationship to other tables: the gridded lon/lat can be used to spatially join the table to other AIS data of the same resolution  
+    + Assumptions: Gridded longitude, latitude (WGS84) at 0.01 resolution  
+<br>
 `gfw_research`  
 
 The second dataset `gfw_research`, is most commonly used by GFW research partners. These tables are versions of the pipeline tables that have been altered to make them more suitable and cost effective for analysis. The following are some tables that may be most relevant to emLab researchers: 
@@ -71,6 +78,12 @@ The second dataset `gfw_research`, is most commonly used by GFW research partner
     + Used to identify good segements for inclusion in analyses   
     + Important fields: good_seg, positions, overlapping_and_short   
     + Assumptions: To be labeled as a `good_seg`, there are more than 5 positions, the vessel moves at least ~100 meters with an average speed > 0, and the longitude is not between -0.109225 and 0.109225  
+    
+ * `port_visits_`  
+    + List of port visits by vessel id (not ssvid)  
+    + Important fields: vessel_id, start_anchorage_id, end_anchorage_id, start_timestamp, end_timestamp   
+    + Assumptions: port visits must include a port entry, a port stop or a port gap, and  a port exit. Port stops begin when the vessel speed is < 0.2 knots and ends when the vessel speed is > 0.5 knots. Port gaps are defined as gaps in AIS transmission for more than 4 hours   
+    + The port visits table is also organized daily and can be subsetted and queried in the same way as the port events table  
     
  * `vi_ssvid_byyear_vYYYYMMDD`  
     + Summary of annual vessel activity and identity information by ssvid. This table is best used to summarize vessel activity (like fishing hours) by ssvid if specific position data (lat/lon) are not important. Queries should use good segments and the neural net score from the `pipe_vYYYYMMDD_fishing` table if position data are important  
