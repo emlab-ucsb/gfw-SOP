@@ -57,68 +57,78 @@ The second dataset `gfw_research`, is most commonly used by GFW research partner
  * `eez_info`  
     + List of Exclusive Economic Zones (EEZ), can be used to add country names or ISO3 codes to the numeric EEZ id   
     + Important fields: eez_id, territory1, territory1_iso3, sovereign1, sovereign1_iso3    
+    + Relationship to other tables: the numeric EEZ id code (`eez_id`) can be matched to the `activity.eez.value` field of the vessel info tables (`vi_ssvid_byyyear_vYYYMMDD`) or to the `regions.eez` field of the `pipe_static.regions` and `pipe_vYYYYMMDD_fishing` tables to add country names, ISO3 codes, and other associated EEZ details      
 
  * `fishing_vessels_ssvid_vYYYYMMDD`   
-    + Current best list of active fishing vessels by ssvid by year   
-    + Important fields: ssvid, year, best_flag best_vessel_class (gear type)   
-    + Assumptions: MMSI is on_fishing_list_best, MMSI is not likely fishing gear based on shipname, MMSI is not offsetting its position, MMI did not broadcast 5 or more different shipnames in a year, MMSI is spoofed no more than 24 hours in a year, the MMSI was active enough for the nerual net to infer a vessel class, and the MMSI is active for at least 5 days and has at least 24 hours of fishing activity in a year   
+    + Current best list of active fishing vessels by ssvid by year. This list is the most restrictive filter for fishing vessels and contains fewer fishing vessels than the `gfw_research.vi_ssvid_byyear_vYYYYMMDD` table   
+    + Important fields: ssvid, year, best_flag, best_vessel_class (gear type)   
+    + Relationship to other tables: use the `ssvid` and `year` to match to other AIS data such as vessel tracks or characteristics  
+    + Assumptions: MMSI is on_fishing_list_best, MMSI is not likely fishing gear based on shipname, MMSI is not offsetting its position, MMSI did not broadcast 5 or more different shipnames in a year, MMSI is spoofed no more than 24 hours in a year, the MMSI was active enough for the nerual net to infer a vessel class, and the MMSI is active for at least 5 days and has at least 24 hours of fishing activity in a year   
     
  * `loitering_events_2knots_vYYYYMMDD`   
     + List of loitering activities by vessel. Queries will likely want to further restrict results to vessels of a specific type, a minimum distance from shore, and a minimum event duration  
     + Important fields: ssvid, loitering_start_timestamp, loitering_end_timestamp, loitering_hours, avg_distance_from_shore_nm, start_lon, start_lat, end_lon, end_lat  
+    + Relationship to other tables: use `ssvid` to match loitering events to other AIS data such as vessel tracks or characteristics  
     + Assumptions: vessels are moving at < 2 knots (includes all vessel types)  
     
  * `pipe_vYYYYMMDD_fishing`   
     + Table of fishing activity, best table to use to find active fishing positions      
-    + Important fields: seg_id, ssvid, timestamp, lat, lon, nnet_score2, regions records   
+    + Important fields: seg_id, ssvid, timestamp, lat, lon, nnet_score, hours, night_loitering, regions records   
+    + Relationship to other tables: use `ssvid` to relate fishing positions to other vessel specific AIS data. The regions record has information on the location of the position including the EEZ id code `regions.eez`, which can be related to EEZ specific information in `eez_info` using the `eez_id`  
     + Assumptions: Vessels are listed on at least one of the fishing lists in the `vi_ssvid_byyyear_vYYYYMMDD` table  
     + This is a partitioned table. See Section 4.2.4 for more infomraiton about subsetting data in partitioned tables  
     
  * `pipe_vYYYYMMDD_segs`  
     + Used to identify good segements for inclusion in analyses   
     + Important fields: good_seg, positions, overlapping_and_short   
+    + Relationship to other tables: use the `seg_id` to match segments passing the quality filters to vessel position segments in `pipe_vYYYYMMDD_fishing`  
     + Assumptions: To be labeled as a `good_seg`, there are more than 5 positions, the vessel moves at least ~100 meters with an average speed > 0, and the longitude is not between -0.109225 and 0.109225  
     
- * `port_visits_`  
-    + List of port visits by vessel id (not ssvid)  
-    + Important fields: vessel_id, start_anchorage_id, end_anchorage_id, start_timestamp, end_timestamp   
-    + Assumptions: port visits must include a port entry, a port stop or a port gap, and  a port exit. Port stops begin when the vessel speed is < 0.2 knots and ends when the vessel speed is > 0.5 knots. Port gaps are defined as gaps in AIS transmission for more than 4 hours   
-    + The port visits table is also organized daily and can be subsetted and queried in the same way as the port events table  
+ * `port_visits_no_overlapping_short_seg_vYYYYMMDD`  
+    + List of port visits by vessel id (not ssvid)    
+    + Important fields: ssvid, vessel_id, start_anchorage_id, end_anchorage_id, start_timestamp, end_timestamp   
+    + Relationship to other tables: use the `ssvid` to match to vessel tracks or characteristics. Match the start or end `anchorage_id` to the `s2id` in the `anchorages.named_anchorages_vYYYYMMDD` table to obtain information for the anchorages such as location, name, and EEZ  
+    + Assumptions: This table differs from `port_events_YYYYMMDD` because port visits must include a port entry, a port stop or a port gap, and a port exit. Port stops begin when the vessel speed is < 0.2 knots and ends when the vessel speed is > 0.5 knots. Port gaps are defined as gaps in AIS transmission for more than 4 hours   
     
  * `vi_ssvid_byyear_vYYYYMMDD`  
-    + Summary of annual vessel activity and identity information by ssvid. This table is best used to summarize vessel activity (like fishing hours) by ssvid if specific position data (lat/lon) are not important. Queries should use good segments and the neural net score from the `pipe_vYYYYMMDD_fishing` table if position data are important  
+    + Summary of annual vessel activity and identity information by ssvid. This table is best used to get a set of best vessel characteristics or summarize vessel activity (like fishing hours) by ssvid and year    
     + Important fields: ssvid, year, activity records (summary of the amount and location of the vessel's activity), best records (best vessel characteristics)  
+    + Relationship to other tables: the `ssvid` can be used to match vessel characteristics to vessel tracks in the `pipe_vYYYYMMDD_fishing`  
+    + Assumptions: fishing hours are calculated by segment and summed by EEZ. If a segment boarders two EEZs fishing hours will be counted in both, therefore it's possible for the sum of fishing hours in the `activity.eez.fishing_hours` to be greater than the total hours recorded in the `activity.fishing_hours` field. For a more accurate estimate of fishing hours, particularly binned fishing hours, use the `pipe_vYYYYMMDD_fishing` table and calculate fishing hours using the `nnet_score` by vessel, year, and grid cell. An example of calculating binned fishing effort is provided in Section 4.3.      
 <br>  
 
 `anchorages`  
 
-The GFW data uses anchorages which are different from ports. The anchorage datset gridded the globe at approximately 0.5 km cells and identified grid cells where at least 20 individual vessels remained stationary from 2012-2019. Each location was assigned a unique anchorage id. Generally, there are many anchorages within a single port. More information about how anchorages are assigned can be found on the GFW [website](https://globalfishingwatch.org/datasets-and-code/anchorages/). The following table is likely the most useful for emLab researchers:  
+The GFW data uses anchorages which are different from ports. The anchorage dataset gridded the globe at approximately 0.5 km cells and identified grid cells where at least 20 individual vessels remained stationary from 2012-2019. Each location was assigned a unique anchorage id. Generally, there are many anchorages within a single port. More information about how anchorages are assigned can be found on the GFW [website](https://globalfishingwatch.org/datasets-and-code/anchorages/). The following table is likely the most useful for emLab researchers:  
 
  * `named_anchorages_vYYYYMMDD`  
-    + List of all named anchorages in the GFW data   
+    + List of all named anchorages in the GFW data with associated information on location and EEZs    
     + Important fields: s2id (anchorage id), iso3, lat, lon  
+    + Relationship to other tables: the `s2id` can be used to match to a start or end `anchorage_id` in the `pipe_production_vYYYYMMDD.port_events_YYYYMMDD`, `pipe_production_vYYYYMMDD.voyages`, and `gfw_research.port_visits_no_overlapping_short_seg_vYYYYMMDD` tables  
     + Assumptions: at least 20 vessels remained stationary between 2012 and 2019  
 <br>      
 
 `vessel_database`  
 
-The vessel database is a collection of tables tracking vessel registry information. This database is particularly useful for querying lists of non-fishing vessels, such as carriers. For lists of fishing vessels, it's better to use `gfw_research.fishing_vessels_ssvid_vYYYYMMDD`. The following table may be the most useful to emLab researchers:  
+The vessel database is a collection of tables tracking information from over 30 different vessel registries. The database provides historic registry information and can be used to track changes in vessel identities over time. This database is particularly useful for querying lists of non-fishing vessels, such as carriers. It is better to first use the `gfw_research.vi_ssvid_byyear_vYYYYMMDD` table when searching for vessel characteristics and then using vessel database for vessels that aren't found in the vessel info table particularly non-fishing vessels. The following table may be the most useful to emLab researchers:  
 
  * `all_vessels_vYYYYMMDD`  
     + List of all vessels in the GFW database for all years   
-    + Important fields: identity records, feature records, is_carieer, registry records (especially registry.confidence)  
+    + Important fields: matched, feature records, is_carrier, is_fishing, is_bunker, is_new  
+    + Relationship to other tables: use `ssvid` to match vessel registry information to other AIS data  
+    + The feature record summarizes vessel characteristics (geartype, length, engine power, tonnage, crew size) matched between AIS broadcasts and the vessel registries. In general this is the cleanest way to get vessel characteristics from the vessel database. The identity records summarize vessel characteristics broadcast over AIS and the registry record summarizes vessels characteristics from all the scraped vessel registries. The `is_carrier`, `is_fishing`, `is_bunker`, and `is_new` fields are helpful for easily filtering each category of vessels.    
     
-The vesssel database is not comprehensive adn is only as good as the AIS and registry data. The dataset may contain typos or outdated records and caution should be used in analysis.   
+The vesssel database is not comprehensive and is only as good as the AIS and registry data. The dataset may contain typos or outdated records and caution should be used in analysis.   
 
 ## Best Tables
 
-The [GFW Data Training](https://drive.google.com/drive/u/0/folders/0AIfysivHdyTgUk9PVA) shared Drive contains the 'BigQuery Table Reference' sheet whch is the best place to find which table versions are the most up to date. Sometimes the newest versions of tables are in-development so it is not safe to assume that the latest version by date is the best version to use. This directory is maintained by GFW and is the best place to check for information about which tables to use. Any tables in the `gfw_research` dataset beginning with `pipe_vYYYYMMDD_` are tables that result directly from the pipeline. The best version of these tables to use will correspond to the current best pipeline dataset in the 'BigQuery Table Reference' sheet. For example, if the current best pipeline is `pipe_production_v20201001` then the best versions of the tables to use in the `gfw_research` dataset will be `pipe_v20201001_`.  If you can’t access the shared drive, please reach out to Tyler Clavelle at GFW.   
+The [GFW Data Training](https://drive.google.com/drive/u/0/folders/0AIfysivHdyTgUk9PVA) shared Drive contains the 'BigQuery Table Reference' sheet which is the best place to find which table versions are the most up to date. Sometimes the newest versions of tables are in-development so it is not safe to assume that the latest version by date is the best version to use. This directory is maintained by GFW and is the best place to check for information about which tables to use. Any tables in the `gfw_research` dataset beginning with `pipe_vYYYYMMDD_` are tables that result directly from the pipeline. The best version of these tables to use will correspond to the current best pipeline dataset in the 'BigQuery Table Reference' sheet. For example, if the current best pipeline is `pipe_production_v20201001` then the best versions of the tables to use in the `gfw_research` dataset will be `pipe_v20201001_`.  If you can’t access the shared drive, please reach out to Tyler Clavelle at GFW.   
 
 ## VMS Datasets
 
-Country VMS datasets provide reliable vessel tracking with low risks of tampering or transmission gaps since VMS devices generally broadcast at fixed rates and many countries impose strict requirements on VMS use with hefty fines for violations. When available, VMS data can complement AIS data, particularly in regions where AIS reception is poor, allowing for a greater understanding of fishing activity.   
+Country VMS datasets provide reliable vessel tracking with low risks of tampering or transmission gaps since VMS devices generally broadcast at fixed rates and many countries impose strict requirements on VMS use with hefty fines for violations. When available, VMS data can complement AIS data, particularly in regions where AIS reception is poor, allowing for a greater understanding of fishing activity. Years of available data and level of metadata for VMS varies by country and approval to use the data is almost always required. If you are interested in using VMS data in your research please reach out to Tyler Clavelle at GFW.    
 
-The VMS datasets do not have equivalent research tables like the AIS pipeline does. As a result, the VMS datasets do not have an ‘hours’ field from which to calculate fishing hours. Instead, fishing hours can be calculated using the absolute value of the difference between two timestamps. An example of querying fishing hours from a VMS dataset is provided on the [GFW GitHub](https://github.com/GlobalFishingWatch/bigquery-documentation-wf827/tree/master/queries/examples/current). 
+The VMS datasets do not have equivalent research tables like the AIS pipeline does. As a result, the VMS datasets do not have an ‘hours’ field from which to calculate fishing hours. Instead, fishing hours can be calculated using the absolute value of the difference between two timestamps. An example of querying fishing hours from a VMS dataset is provided on the [GFW GitHub](https://github.com/GlobalFishingWatch/bigquery-documentation-wf827/tree/master/queries/examples/current).   
 
 ## Dark Targets Tables 
 
