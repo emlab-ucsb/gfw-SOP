@@ -5,7 +5,7 @@ output: html_document
 
 # Data 
 
-BigQuery data have a three level structure: projects, datasets, and tables. There are two main projects that you should have access to: `world-fishing-827` and `emlab-gcp`. The GFW data lives in the `world-fishing-827` project and core datasets and tables are discussed further below. The `emlab-gcp` project is where any scratch datasets and project specific tables should be saved. Functions to create and save tables to BigQuery are detailed in Section 4.2.3. No direct changes should be made to GFW datasets or tables in the `world-fishing-827` project.  
+BigQuery data have a three level structure: projects, datasets, and tables. There are two main projects that you should have access to: `world-fishing-827` and `emlab-gcp`. The GFW data lives in the `world-fishing-827` project and core datasets and tables are discussed further below. The GFW GitHub repository [bigquery-documentation-wf827](https://github.com/GlobalFishingWatch/bigquery-documentation-wf827) has lots of useful information and examples for working with GFW data. You must have a GitHub account and be added to the repository in order to view the page. If you do not have access please reach out to Tyler Clavelle at GFW. The `emlab-gcp` project is where any scratch datasets and project specific tables should be saved. Functions to create and save tables to BigQuery are detailed in Section 4.2.3. No direct changes should be made to GFW datasets or tables in the `world-fishing-827` project.  
 
 ## Core AIS Datasets and Assumptions
 
@@ -126,21 +126,34 @@ The [GFW Data Training](https://drive.google.com/drive/u/0/folders/0AIfysivHdyTg
 
 ## VMS Datasets
 
-Country VMS datasets provide reliable vessel tracking with low risks of tampering or transmission gaps since VMS devices generally broadcast at fixed rates and many countries impose strict requirements on VMS use with hefty fines for violations. When available, VMS data can complement AIS data, particularly in regions where AIS reception is poor, allowing for a greater understanding of fishing activity. Years of available data and level of metadata for VMS varies by country and approval to use the data is almost always required. If you are interested in using VMS data in your research please reach out to Tyler Clavelle at GFW.    
+The VMS datasets do not have equivalent research tables like the AIS pipeline does and most researchers will not have access to the country VMS tables in BigQuery unless access has been requested/approved. See Section 1.2 for additional information on how to access country VMS data.   
 
-The VMS datasets do not have equivalent research tables like the AIS pipeline does. As a result, the VMS datasets do not have an ‘hours’ field from which to calculate fishing hours. Instead, fishing hours can be calculated using the absolute value of the difference between two timestamps. An example of querying fishing hours from a VMS dataset is provided on the [GFW GitHub](https://github.com/GlobalFishingWatch/bigquery-documentation-wf827/tree/master/queries/examples/current).   
+## SAR/VIIRS Datasets 
 
-## Dark Targets Tables 
+The SAR and VIIRS datasets are newer data products for GFW. There is one SAR table within the `gfw_research` dataset. The main VIIRS table is in a separate dataset `pipe_viirs_production_vYYYYMMDD` and a table to match VIIRS data to AIS data is found in the `gfw_research` dataset. More information on the SAR data is available on the [GFW SAR Wiki](https://github.com/GlobalFishingWatch/bigquery-documentation-wf827/wiki/SAR-vessel-detections) page and more information on VIIRS data, including an example of how to match VIIRS to AIS, is included in the [GFW VIIRS Wiki](https://github.com/GlobalFishingWatch/bigquery-documentation-wf827/wiki/VIIRS-boat-detections) page. The following are the relevant tables for SAR and VIIRS data:
 
-The dark targets tables identify vessels that are not broadcasting AIS and includes two main tables in the `gfw_research` dataset:   
-
- * `sar_ds3_fmean250_e10_d70_s20_8xmean_ns`  
+ * `gfw_research.sar_ds3_fmean250_e10_d70_s20_8xmean_ns`  
     + Main table for SAR detections  
     + Important fields: ssvid, lat, lon, detection_time  
+    + Relationship to other tables: There aren't currently any examples for relating SAR detections to AIS. The GFW Wiki page will be updated in the future to include examples of matching SAR and AIS data.  
     + Assumptions: Detections are based on a random forest model trained on distance from shore, distance from port, bathymetry, slope, and the density of fishing vessels  
     + This is a partitioned table. See Section 4.2.4 for more information about subsetting data in partitioned tables  
     
- * `viirs_matched_vYYYYMMDD`  
+  * `pipe_viirs_production_vYYYYMMDD.raw_vbd_global`  
+    + The global VBD (VIIRS boat detections) datset   
+    + Important fields: id_Key, lat_DNB, lon_DNB, Date_Mscan, QF_detect   
+    + Relationship to other tables: the `Date_Mscan`, `lat_DNB`, and `lon_DNB`, can be combined to form the `detect_id` which is a unqiue identifier for each VIIRS detection found in the `viirs_matched_vYYYYMMDD` table    
+    + Assumptions: Detections are based on a random forest model trained on distance from shore, distance from port, bathymetry, slope, and the density of fishing vessels  
+    + This is a partitioned table. See Section 4.2.4 for more information about subsetting data in partitioned tables     
+    
+ * `gfw_research.viirs_matched_vYYYYMMDD`  
     + Table of VIIRS detections matched with AIS data  
-    + Important fields: detection_id, detect_lat, detect_lon, detect_timestamp, QF_detect (quality flag field), ssvid  
+    + Important fields: detect_id, detect_lat, detect_lon, detect_timestamp, QF_detect (quality flag field), ssvid  
+    + Relationship to other tables: use the `detect_id` to match to the raw VIIRS data in `pipe_viirs_production_vYYYYMMDD.raw_vbd_global`, the `ssvid` can be used to relate the detections to other vessel characteristics  
     + This is a partitioned table. See Section 4.2.4 for more information about subsetting data in partitioned tables  
+    
+    
+    
+    
+    
+    
