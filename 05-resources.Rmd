@@ -39,9 +39,9 @@ Additionally, the `Training Slide Decks/training_slides_current` folder contains
   * SAR Vessel Detection  
   * VIIRS Vessel Detection  
   
-The GFW [GitHub](https://github.com/GlobalFishingWatch/bigquery-documentation-wf827) repository (`bigquery-documentation-wf827`) includes examples of common queries in `queries/examples/current`. If you can't access the repository, please reach out to Tyler Clavelle at GFW.  
+The GFW [GitHub](https://github.com/GlobalFishingWatch/bigquery-documentation-wf827) repository (`bigquery-documentation-wf827`) includes examples of common queries in `queries/examples/current`. The repository's [Wiki](https://github.com/GlobalFishingWatch/bigquery-documentation-wf827/wiki) page is consistently being updated with new information on how to work with the datasets including links to example queries. If you can't access the repository, please reach out to Tyler Clavelle at GFW.  
 
 
 ## Fishwatchr
 
-GFW has recently developed an R package called *Fishwatchr*  to help with graphing and mapping GFW data. The package contains predefined `ggplot2` themes and color palettes as well as simplified functions for plotting data. The package is hosted on [GitHub](https://github.com/GlobalFishingWatch/fishwatchr) and can be installed following the instructions in the documentation. The package was first released in Fall 2020 and is being continually improved and updated. Any problems or suggestions can be sent to the GFW team using the repository's [Issues](https://github.com/GlobalFishingWatch/fishwatchr/issues) page.  
+GFW has recently developed an R package called *Fishwatchr*  to help with graphing and mapping GFW data. The package contains predefined `ggplot2` themes and color palettes as well as simplified functions for plotting data. The package is hosted on [GitHub](https://github.com/GlobalFishingWatch/fishwatchr) and can be installed following the instructions in the documentation. The documentation also provides examples of how to use the package and the different types of plots and maps that are available. The package was first released in Fall 2020 and is being continually improved and updated. Any problems or suggestions can be sent to the GFW team using the repository's [Issues](https://github.com/GlobalFishingWatch/fishwatchr/issues) page.  
