@@ -584,7 +584,7 @@ bq_project_query("emlab-gcp", #Billing project
 
 We'll use the data from the table we just created to make a global map of fishing effort in January 2020 for all drifting longline vessels. Fishing hours range from just above 0 to just over 500 although most fishing hours values are below 100. Fishing hours can be displayed in a number of ways including total fishing hours, total fishing hours per area ($km^2$) or log transformed fishing hours. In this example, we'll log transform the fishing hours. The colors used to produce the base map were taken from GFW color palletes which are part of the `fishwatchr` package. More inforamtion on installing and using the `fishwatchr` package can be found in the package [repository](https://github.com/GlobalFishingWatch/fishwatchr#fishwatchr).   
 
-```{r example-map-fishing-effort, echo=F, fig.width=6, fig.height=4}
+```{r example-map-fishing-effort, message=F, warning=F}
 # Download a global map
 land_sf <- rnaturalearth::ne_countries(scale = 50, returnclass = "sf")
 
@@ -598,7 +598,7 @@ nonzero_hours <- fishing_hours %>%
 
 
 # Map fishing hours 
-ggplot() +
+fishing_map <- ggplot() +
   geom_sf(data = land_sf, 
           color = "#0A1738", 
           fill = "#374a6d") + 
@@ -623,14 +623,17 @@ ggplot() +
         legend.key.height = unit(3, "mm"), 
         legend.key.width = unit(20, "mm"),
         legend.title.align = 0.5,
-        legend.text = element_text(color = "#848b9b", size = 8), 
-        legend.title = element_text(color = "#363c4c", size = 8), 
-        plot.title = element_text(color = "#363c4c", size = 10), 
-        plot.subtitle = element_text(color = "#363c4c", size = 10), 
+        legend.text = element_text(color = "#848b9b", size = 12), 
+        legend.title = element_text(color = "#363c4c", size = 12), 
+        plot.title = element_text(color = "#363c4c", size = 14), 
+        plot.subtitle = element_text(color = "#363c4c", size = 14), 
         axis.title = element_blank(), 
         axis.text = element_text(size = 6)) 
 ```
 
+```{r display-map, fig.width=6, fig.height=4, message=F, warning=F, echo=F}
+fishing_map 
+```
  
  
  
