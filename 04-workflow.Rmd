@@ -630,11 +630,19 @@ fishing_map <- ggplot() +
         axis.title = element_blank(), 
         axis.text = element_text(size = 6)) 
 ```
-
-```{r display-map, fig.width=6, fig.height=4, message=F, warning=F, echo=F}
-fishing_map 
-```
  
+```{r save-map, include=F}
+ggsave(plot = fishing_map, 
+       filename = "images/fishing_hours_map.png",
+       units = "in",
+       width = 6,
+       height = 4, 
+       dpi = 300)
+```
+
+<br> 
+
+![](images/fishing_hours_map.png)
  
  
  
