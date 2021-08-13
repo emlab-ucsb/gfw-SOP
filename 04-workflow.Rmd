@@ -584,7 +584,7 @@ bq_project_query("emlab-gcp", #Billing project
 
 We'll use the data from the table we just created to make a global map of fishing effort in January 2020 for all drifting longline vessels. Fishing hours range from just above 0 to just over 500 although most fishing hours values are below 100. Fishing hours can be displayed in a number of ways including total fishing hours, total fishing hours per area ($km^2$) or log transformed fishing hours. In this example, we'll log transform the fishing hours. The colors used to produce the base map were taken from GFW color palletes which are part of the `fishwatchr` package. More inforamtion on installing and using the `fishwatchr` package can be found in the package [repository](https://github.com/GlobalFishingWatch/fishwatchr#fishwatchr).   
 
-```{r example-map-fishing-effort, echo=F, fig.width='6', fig.height='4'}
+```{r example-map-fishing-effort, echo=F, fig.width=6, fig.height=4}
 # Download a global map
 land_sf <- rnaturalearth::ne_countries(scale = 50, returnclass = "sf")
 
