@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>5 Additional Resources | Global Fishing Watch Data Standard Operating Procedure</title>
+  <title>3.4 SAR/VIIRS Datasets | Global Fishing Watch Data Standard Operating Procedure</title>
   <meta name="description" content="Standard operating procedures for emLab projects using Global Fishing Watch data" />
   <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="5 Additional Resources | Global Fishing Watch Data Standard Operating Procedure" />
+  <meta property="og:title" content="3.4 SAR/VIIRS Datasets | Global Fishing Watch Data Standard Operating Procedure" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://emlab-ucsb.github.io/gfw-SOP/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="emlab-ucsb/gfw-SOP" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="5 Additional Resources | Global Fishing Watch Data Standard Operating Procedure" />
+  <meta name="twitter:title" content="3.4 SAR/VIIRS Datasets | Global Fishing Watch Data Standard Operating Procedure" />
   
   <meta name="twitter:description" content="Standard operating procedures for emLab projects using Global Fishing Watch data" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
-<link rel="prev" href="4-3-example-calculate-fishing-hours.html"/>
-<link rel="next" href="5-1-global-fishing-watch-data-training.html"/>
+<link rel="prev" href="3-3-vms-datasets.html"/>
+<link rel="next" href="4-workflow.html"/>
 <script src="assets/jquery-2.2.3/jquery.min.js"></script>
 <link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -179,17 +179,55 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="additional-resources" class="section level1">
-<h1><span class="header-section-number">5</span> Additional Resources</h1>
-<p>This section provides additional resources for using GFW data.</p>
+<div id="sarviirs-datasets" class="section level2">
+<h2><span class="header-section-number">3.4</span> SAR/VIIRS Datasets</h2>
+<p>The SAR and VIIRS datasets are newer data products for GFW. There is one SAR table within the <code>gfw_research</code> dataset. The main VIIRS table is in a separate dataset <code>pipe_viirs_production_vYYYYMMDD</code> and a table to match VIIRS data to AIS data is found in the <code>gfw_research</code> dataset. More information on the SAR data is available on the <a href="https://github.com/GlobalFishingWatch/bigquery-documentation-wf827/wiki/SAR-vessel-detections">GFW SAR Wiki</a> page and more information on VIIRS data, including an example of how to match VIIRS to AIS, is included in the <a href="https://github.com/GlobalFishingWatch/bigquery-documentation-wf827/wiki/VIIRS-boat-detections">GFW VIIRS Wiki</a> page. The following are the relevant tables for SAR and VIIRS data:</p>
+<ul>
+<li><code>gfw_research.sar_ds3_fmean250_e10_d70_s20_8xmean_ns</code>
+<ul>
+<li>Main table for SAR detections<br />
+</li>
+<li>Important fields: ssvid, lat, lon, detection_time<br />
+</li>
+<li>Relationship to other tables: There aren’t currently any examples for relating SAR detections to AIS. The GFW Wiki page will be updated in the future to include examples of matching SAR and AIS data.<br />
+</li>
+<li>Assumptions: Detections are based on a random forest model trained on distance from shore, distance from port, bathymetry, slope, and the density of fishing vessels<br />
+</li>
+<li>This is a partitioned table. See Section 4.2.4 for more information about subsetting data in partitioned tables</li>
+</ul></li>
+<li><code>pipe_viirs_production_vYYYYMMDD.raw_vbd_global</code>
+<ul>
+<li>The global VBD (VIIRS boat detections) datset<br />
+</li>
+<li>Important fields: id_Key, lat_DNB, lon_DNB, Date_Mscan, QF_detect<br />
+</li>
+<li>Relationship to other tables: the <code>Date_Mscan</code>, <code>lat_DNB</code>, and <code>lon_DNB</code>, can be combined to form the <code>detect_id</code> which is a unqiue identifier for each VIIRS detection found in the <code>viirs_matched_vYYYYMMDD</code> table<br />
+</li>
+<li>Assumptions: Detections are based on a random forest model trained on distance from shore, distance from port, bathymetry, slope, and the density of fishing vessels<br />
+</li>
+<li>This is a partitioned table. See Section 4.2.4 for more information about subsetting data in partitioned tables</li>
+</ul></li>
+<li><code>gfw_research.viirs_matched_vYYYYMMDD</code>
+<ul>
+<li>Table of VIIRS detections matched with AIS data<br />
+</li>
+<li>Important fields: detect_id, detect_lat, detect_lon, detect_timestamp, QF_detect (quality flag field), ssvid<br />
+</li>
+<li>Relationship to other tables: use the <code>detect_id</code> to match to the raw VIIRS data in <code>pipe_viirs_production_vYYYYMMDD.raw_vbd_global</code>, the <code>ssvid</code> can be used to relate the detections to other vessel characteristics<br />
+</li>
+<li>This is a partitioned table. See Section 4.2.4 for more information about subsetting data in partitioned tables</li>
+</ul></li>
+</ul>
+
 </div>
+<!-- </div> -->
             </section>
 
           </div>
         </div>
       </div>
-<a href="4-3-example-calculate-fishing-hours.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="5-1-global-fishing-watch-data-training.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="3-3-vms-datasets.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="4-workflow.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="assets/gitbook-2.6.7/js/app.min.js"></script>

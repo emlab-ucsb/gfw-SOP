@@ -24,7 +24,7 @@
 <meta name="author" content="" />
 
 
-<meta name="date" content="2021-01-22" />
+<meta name="date" content="2021-08-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -141,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1" data-path="3-1-core-ais-datasets-and-assumptions.html"><a href="3-1-core-ais-datasets-and-assumptions.html"><i class="fa fa-check"></i><b>3.1</b> Core AIS Datasets and Assumptions</a></li>
 <li class="chapter" data-level="3.2" data-path="3-2-best-tables.html"><a href="3-2-best-tables.html"><i class="fa fa-check"></i><b>3.2</b> Best Tables</a></li>
 <li class="chapter" data-level="3.3" data-path="3-3-vms-datasets.html"><a href="3-3-vms-datasets.html"><i class="fa fa-check"></i><b>3.3</b> VMS Datasets</a></li>
-<li class="chapter" data-level="3.4" data-path="3-4-dark-targets-tables.html"><a href="3-4-dark-targets-tables.html"><i class="fa fa-check"></i><b>3.4</b> Dark Targets Tables</a></li>
+<li class="chapter" data-level="3.4" data-path="3-4-sarviirs-datasets.html"><a href="3-4-sarviirs-datasets.html"><i class="fa fa-check"></i><b>3.4</b> SAR/VIIRS Datasets</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="4-workflow.html"><a href="4-workflow.html"><i class="fa fa-check"></i><b>4</b> Workflow</a><ul>
 <li class="chapter" data-level="4.1" data-path="4-1-validation-with-bigquery.html"><a href="4-1-validation-with-bigquery.html"><i class="fa fa-check"></i><b>4.1</b> Validation with BigQuery</a></li>
@@ -151,6 +151,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2.3" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#writing-and-executing-queries"><i class="fa fa-check"></i><b>4.2.3</b> Writing and Executing Queries</a></li>
 <li class="chapter" data-level="4.2.4" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#subsetting-data"><i class="fa fa-check"></i><b>4.2.4</b> Subsetting Data</a></li>
 <li class="chapter" data-level="4.2.5" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#saving-downloading-bigquery-tables"><i class="fa fa-check"></i><b>4.2.5</b> Saving / Downloading BigQuery Tables</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html"><i class="fa fa-check"></i><b>4.3</b> Example: Calculate Fishing Hours</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#setup"><i class="fa fa-check"></i><b>4.3.1</b> Setup</a></li>
+<li class="chapter" data-level="4.3.2" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#query-data"><i class="fa fa-check"></i><b>4.3.2</b> Query Data</a></li>
+<li class="chapter" data-level="4.3.3" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#map-fishing-effort"><i class="fa fa-check"></i><b>4.3.3</b> Map Fishing Effort</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="5-additional-resources.html"><a href="5-additional-resources.html"><i class="fa fa-check"></i><b>5</b> Additional Resources</a><ul>
@@ -176,10 +181,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="bigquery-setup" class="section level2">
 <h2><span class="header-section-number">2.1</span> BigQuery Setup</h2>
-<p>BigQuery can be accessed in three ways: through the <a href="https://console.cloud.google.com/">BigQuery console</a>, the BigQuery command line interface, and through BigQuery APIs in Python or R. For more information on using BigQuery in R, refer to Section 4.1.</p>
+<p>BigQuery can be accessed in three ways: through the <a href="https://console.cloud.google.com/bigquery?project=emlab-gcp">BigQuery console</a>, the BigQuery command line interface, and through BigQuery APIs in Python or R. For more information on using BigQuery in R, refer to Section 4.1.</p>
 <p>BigQuery is part of the Google Cloud Platform (GCP). Details of getting your machine set up with GCP products is covered in the emLab SOP <a href="https://emlab-ucsb.github.io/SOP/5-1-google-cloud-platform.html">Section 5.1</a>. Once gcloud is installed and your credentials are authenticated you should be able to set <code>emlab-gcp</code> as your project which will link you to emLab’s billing account. If you have any problems joining or connecting to <code>emlab-gcp</code>, please get in touch and we will help set you up.</p>
-<p>The BigQuery console provides a nice interface for writing and validating queries. The upper left corner of the BigQuery console displays the billing project code. For most emLab users, this should say <code>emlab-gcp</code>. The upper right corner shows the user, make sure you are logged in when running queries. Queries can be written in the query editor window and the validator will tell you how large the query is and will warn you if there are any syntax errors in the query. Once a query is run, the results will be displayed beneath the query editor window. Projects, datasets, and tables are displayed on the left hand side of the console.</p>
-<p><img src="images/bq_console_annotated.png" style="width:50.0%;height:50.0%" /></p>
+<p>The BigQuery console provides a nice interface for writing and validating queries. The upper left corner of the BigQuery console displays the billing project code. For most emLab users, this should say <code>emlab-gcp</code>. The upper right corner shows the user, make sure you are logged in when running queries. Queries can be written in the query editor window and the validator will tell you how large the query is and will warn you if there are any syntax errors in the query. Once a query is run, the results will be displayed beneath the query editor window. Projects, datasets, and tables are displayed on the left hand side of the console. Selecting a table will bring up an additional tab displaying the table information.</p>
+<p><img src="images/bq_console_updated_annotated.png" style="width:50.0%;height:50.0%" /></p>
 </div>
             </section>
 
@@ -233,6 +238,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

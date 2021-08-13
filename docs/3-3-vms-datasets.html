@@ -24,7 +24,7 @@
 <meta name="author" content="" />
 
 
-<meta name="date" content="2021-01-22" />
+<meta name="date" content="2021-08-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
   <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
 <link rel="prev" href="3-2-best-tables.html"/>
-<link rel="next" href="3-4-dark-targets-tables.html"/>
+<link rel="next" href="3-4-sarviirs-datasets.html"/>
 <script src="assets/jquery-2.2.3/jquery.min.js"></script>
 <link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -141,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1" data-path="3-1-core-ais-datasets-and-assumptions.html"><a href="3-1-core-ais-datasets-and-assumptions.html"><i class="fa fa-check"></i><b>3.1</b> Core AIS Datasets and Assumptions</a></li>
 <li class="chapter" data-level="3.2" data-path="3-2-best-tables.html"><a href="3-2-best-tables.html"><i class="fa fa-check"></i><b>3.2</b> Best Tables</a></li>
 <li class="chapter" data-level="3.3" data-path="3-3-vms-datasets.html"><a href="3-3-vms-datasets.html"><i class="fa fa-check"></i><b>3.3</b> VMS Datasets</a></li>
-<li class="chapter" data-level="3.4" data-path="3-4-dark-targets-tables.html"><a href="3-4-dark-targets-tables.html"><i class="fa fa-check"></i><b>3.4</b> Dark Targets Tables</a></li>
+<li class="chapter" data-level="3.4" data-path="3-4-sarviirs-datasets.html"><a href="3-4-sarviirs-datasets.html"><i class="fa fa-check"></i><b>3.4</b> SAR/VIIRS Datasets</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="4-workflow.html"><a href="4-workflow.html"><i class="fa fa-check"></i><b>4</b> Workflow</a><ul>
 <li class="chapter" data-level="4.1" data-path="4-1-validation-with-bigquery.html"><a href="4-1-validation-with-bigquery.html"><i class="fa fa-check"></i><b>4.1</b> Validation with BigQuery</a></li>
@@ -151,6 +151,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2.3" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#writing-and-executing-queries"><i class="fa fa-check"></i><b>4.2.3</b> Writing and Executing Queries</a></li>
 <li class="chapter" data-level="4.2.4" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#subsetting-data"><i class="fa fa-check"></i><b>4.2.4</b> Subsetting Data</a></li>
 <li class="chapter" data-level="4.2.5" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#saving-downloading-bigquery-tables"><i class="fa fa-check"></i><b>4.2.5</b> Saving / Downloading BigQuery Tables</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html"><i class="fa fa-check"></i><b>4.3</b> Example: Calculate Fishing Hours</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#setup"><i class="fa fa-check"></i><b>4.3.1</b> Setup</a></li>
+<li class="chapter" data-level="4.3.2" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#query-data"><i class="fa fa-check"></i><b>4.3.2</b> Query Data</a></li>
+<li class="chapter" data-level="4.3.3" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#map-fishing-effort"><i class="fa fa-check"></i><b>4.3.3</b> Map Fishing Effort</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="5-additional-resources.html"><a href="5-additional-resources.html"><i class="fa fa-check"></i><b>5</b> Additional Resources</a><ul>
@@ -176,8 +181,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="vms-datasets" class="section level2">
 <h2><span class="header-section-number">3.3</span> VMS Datasets</h2>
-<p>Country VMS datasets provide reliable vessel tracking with low risks of tampering or transmission gaps since VMS devices generally broadcast at fixed rates and many countries impose strict requirements on VMS use with hefty fines for violations. When available, VMS data can complement AIS data, particularly in regions where AIS reception is poor, allowing for a greater understanding of fishing activity.</p>
-<p>The VMS datasets do not have equivalent research tables like the AIS pipeline does. As a result, the VMS datasets do not have an ‘hours’ field from which to calculate fishing hours. Instead, fishing hours can be calculated using the absolute value of the difference between two timestamps. An example of querying fishing hours from a VMS dataset is provided on the <a href="https://github.com/GlobalFishingWatch/bigquery-documentation-wf827/tree/master/queries/examples/current">GFW GitHub</a>.</p>
+<p>The VMS datasets do not have equivalent research tables like the AIS pipeline does and most researchers will not have access to the country VMS tables in BigQuery unless access has been requested/approved. See Section 1.2 for additional information on how to access country VMS data.</p>
 </div>
             </section>
 
@@ -185,7 +189,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 <a href="3-2-best-tables.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="3-4-dark-targets-tables.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="3-4-sarviirs-datasets.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="assets/gitbook-2.6.7/js/app.min.js"></script>
@@ -231,6 +235,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

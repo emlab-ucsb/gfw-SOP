@@ -24,7 +24,7 @@
 <meta name="author" content="" />
 
 
-<meta name="date" content="2021-01-22" />
+<meta name="date" content="2021-08-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -141,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1" data-path="3-1-core-ais-datasets-and-assumptions.html"><a href="3-1-core-ais-datasets-and-assumptions.html"><i class="fa fa-check"></i><b>3.1</b> Core AIS Datasets and Assumptions</a></li>
 <li class="chapter" data-level="3.2" data-path="3-2-best-tables.html"><a href="3-2-best-tables.html"><i class="fa fa-check"></i><b>3.2</b> Best Tables</a></li>
 <li class="chapter" data-level="3.3" data-path="3-3-vms-datasets.html"><a href="3-3-vms-datasets.html"><i class="fa fa-check"></i><b>3.3</b> VMS Datasets</a></li>
-<li class="chapter" data-level="3.4" data-path="3-4-dark-targets-tables.html"><a href="3-4-dark-targets-tables.html"><i class="fa fa-check"></i><b>3.4</b> Dark Targets Tables</a></li>
+<li class="chapter" data-level="3.4" data-path="3-4-sarviirs-datasets.html"><a href="3-4-sarviirs-datasets.html"><i class="fa fa-check"></i><b>3.4</b> SAR/VIIRS Datasets</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="4-workflow.html"><a href="4-workflow.html"><i class="fa fa-check"></i><b>4</b> Workflow</a><ul>
 <li class="chapter" data-level="4.1" data-path="4-1-validation-with-bigquery.html"><a href="4-1-validation-with-bigquery.html"><i class="fa fa-check"></i><b>4.1</b> Validation with BigQuery</a></li>
@@ -151,6 +151,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2.3" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#writing-and-executing-queries"><i class="fa fa-check"></i><b>4.2.3</b> Writing and Executing Queries</a></li>
 <li class="chapter" data-level="4.2.4" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#subsetting-data"><i class="fa fa-check"></i><b>4.2.4</b> Subsetting Data</a></li>
 <li class="chapter" data-level="4.2.5" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#saving-downloading-bigquery-tables"><i class="fa fa-check"></i><b>4.2.5</b> Saving / Downloading BigQuery Tables</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html"><i class="fa fa-check"></i><b>4.3</b> Example: Calculate Fishing Hours</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#setup"><i class="fa fa-check"></i><b>4.3.1</b> Setup</a></li>
+<li class="chapter" data-level="4.3.2" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#query-data"><i class="fa fa-check"></i><b>4.3.2</b> Query Data</a></li>
+<li class="chapter" data-level="4.3.3" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#map-fishing-effort"><i class="fa fa-check"></i><b>4.3.3</b> Map Fishing Effort</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="5-additional-resources.html"><a href="5-additional-resources.html"><i class="fa fa-check"></i><b>5</b> Additional Resources</a><ul>
@@ -178,7 +183,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">1.1</span> Types of Data</h2>
 <p>The Global Fishing Watch (GFW) primary dataset is compiled from Automated Identification System (AIS) data. AIS was originally designed for ship-to-ship communication to help avoid collisions and vessels transmit a lot of information within an AIS message including vessel identity, position, and speed. AIS messages are received by other ships as well as being picked up by terrestrial and satellite receivers. These data are publicly available. More detailed information on AIS and the challenges and opportunities for using AIS to map and analyze fishing activity are presented in the 2019 <a href="http://www.fao.org/documents/card/en/c/ca7012en">Global Atlas of AIS-based Fishing Activity</a>.</p>
 <p>The GFW database also has Vessel Monitoring System (VMS) data for a number of countries. VMS broadcasts vessel location to satellite and terrestrial receivers, which are then relayed to shore-based fishery monitoring centers. Unlike AIS, VMS data are not publicly available and the GFW database only contains data for countries who have agreed to share them. The <a href="https://docs.google.com/spreadsheets/d/1B8Q04rzWRdffty2gVBlHiBDS9DYZLdW8J-4B3xja5ws/edit#gid=0">BigQuery Reference Table</a> contains the most up to date list of available country VMS data.</p>
-<p>GFW also has a new dark targets dataset composed of vessel detections derived from global satellite imagery collections including Visible Infrared Imaging Radiometer Suite (VIIRS) and Synthetic Aperture Radar (SAR). The VIIRS dataset uses satellites to detect vessels operating at night with visible light but is limited by clouds and lunar illumination. SAR uses radio waves to detect vessels but satellites are mainly land based and there is limited ocean coverage. These datasets have been used together and combined with high-resolution optical imagery to illuminate vessels that don’t broadcast AIS, also known as dark targets. Both of these datasets can detect vessels but neither show continuous vessel tracks. When possible, VIIRS detections are matched to AIS in the <code>world-fishing-827.gfw_research.viirs_matched_vYYYYMMDD</code> table.</p>
+<p>GFW is also working on additional datasets composed of vessel detections derived from global satellite imagery collections including Synthetic Aperture Radar (SAR) and Visible Infrared Imaging Radiometer Suite (VIIRS). SAR produces high resolution images which are derived from two European Space Agency satellites: S1A and S1B of Sentinel-1 mission. The VIIRS dataset uses a nightly VIIRS Boat Detection (VBD) dataset produced by NOAA’s Earth Observation Group. The VBD reports the location of boats detected based on light using a sensor onboard the Suomi National Polar-orbiting Partnership and NOAA-20 weather satellites. The methods underlying production of the VBD dataset are described in <a href="https://www.mdpi.com/2072-4292/7/3/3020">Elvidge et al. 2015</a>. These datasets have been used together and combined with other high-resolution optical imagery to illuminate vessels that don’t broadcast AIS, also known as dark targets. Both of these datasets can detect vessels but neither show continuous vessel tracks. GFW is developing more information and examples of how to use these data which will be updated on the <a href="https://github.com/GlobalFishingWatch/bigquery-documentation-wf827/wiki">GitHub Wiki</a> page. If you can’t view the page you can request access to the GFW GitHub repository from Tyler Clavelle.</p>
 </div>
             </section>
 
@@ -232,6 +237,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

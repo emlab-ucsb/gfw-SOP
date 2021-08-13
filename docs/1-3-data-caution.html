@@ -24,7 +24,7 @@
 <meta name="author" content="" />
 
 
-<meta name="date" content="2021-01-22" />
+<meta name="date" content="2021-08-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -141,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1" data-path="3-1-core-ais-datasets-and-assumptions.html"><a href="3-1-core-ais-datasets-and-assumptions.html"><i class="fa fa-check"></i><b>3.1</b> Core AIS Datasets and Assumptions</a></li>
 <li class="chapter" data-level="3.2" data-path="3-2-best-tables.html"><a href="3-2-best-tables.html"><i class="fa fa-check"></i><b>3.2</b> Best Tables</a></li>
 <li class="chapter" data-level="3.3" data-path="3-3-vms-datasets.html"><a href="3-3-vms-datasets.html"><i class="fa fa-check"></i><b>3.3</b> VMS Datasets</a></li>
-<li class="chapter" data-level="3.4" data-path="3-4-dark-targets-tables.html"><a href="3-4-dark-targets-tables.html"><i class="fa fa-check"></i><b>3.4</b> Dark Targets Tables</a></li>
+<li class="chapter" data-level="3.4" data-path="3-4-sarviirs-datasets.html"><a href="3-4-sarviirs-datasets.html"><i class="fa fa-check"></i><b>3.4</b> SAR/VIIRS Datasets</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="4-workflow.html"><a href="4-workflow.html"><i class="fa fa-check"></i><b>4</b> Workflow</a><ul>
 <li class="chapter" data-level="4.1" data-path="4-1-validation-with-bigquery.html"><a href="4-1-validation-with-bigquery.html"><i class="fa fa-check"></i><b>4.1</b> Validation with BigQuery</a></li>
@@ -151,6 +151,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2.3" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#writing-and-executing-queries"><i class="fa fa-check"></i><b>4.2.3</b> Writing and Executing Queries</a></li>
 <li class="chapter" data-level="4.2.4" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#subsetting-data"><i class="fa fa-check"></i><b>4.2.4</b> Subsetting Data</a></li>
 <li class="chapter" data-level="4.2.5" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#saving-downloading-bigquery-tables"><i class="fa fa-check"></i><b>4.2.5</b> Saving / Downloading BigQuery Tables</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html"><i class="fa fa-check"></i><b>4.3</b> Example: Calculate Fishing Hours</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#setup"><i class="fa fa-check"></i><b>4.3.1</b> Setup</a></li>
+<li class="chapter" data-level="4.3.2" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#query-data"><i class="fa fa-check"></i><b>4.3.2</b> Query Data</a></li>
+<li class="chapter" data-level="4.3.3" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#map-fishing-effort"><i class="fa fa-check"></i><b>4.3.3</b> Map Fishing Effort</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="5-additional-resources.html"><a href="5-additional-resources.html"><i class="fa fa-check"></i><b>5</b> Additional Resources</a><ul>
@@ -235,6 +240,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

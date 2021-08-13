@@ -24,7 +24,7 @@
 <meta name="author" content="" />
 
 
-<meta name="date" content="2021-01-22" />
+<meta name="date" content="2021-08-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -141,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1" data-path="3-1-core-ais-datasets-and-assumptions.html"><a href="3-1-core-ais-datasets-and-assumptions.html"><i class="fa fa-check"></i><b>3.1</b> Core AIS Datasets and Assumptions</a></li>
 <li class="chapter" data-level="3.2" data-path="3-2-best-tables.html"><a href="3-2-best-tables.html"><i class="fa fa-check"></i><b>3.2</b> Best Tables</a></li>
 <li class="chapter" data-level="3.3" data-path="3-3-vms-datasets.html"><a href="3-3-vms-datasets.html"><i class="fa fa-check"></i><b>3.3</b> VMS Datasets</a></li>
-<li class="chapter" data-level="3.4" data-path="3-4-dark-targets-tables.html"><a href="3-4-dark-targets-tables.html"><i class="fa fa-check"></i><b>3.4</b> Dark Targets Tables</a></li>
+<li class="chapter" data-level="3.4" data-path="3-4-sarviirs-datasets.html"><a href="3-4-sarviirs-datasets.html"><i class="fa fa-check"></i><b>3.4</b> SAR/VIIRS Datasets</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="4-workflow.html"><a href="4-workflow.html"><i class="fa fa-check"></i><b>4</b> Workflow</a><ul>
 <li class="chapter" data-level="4.1" data-path="4-1-validation-with-bigquery.html"><a href="4-1-validation-with-bigquery.html"><i class="fa fa-check"></i><b>4.1</b> Validation with BigQuery</a></li>
@@ -151,6 +151,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2.3" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#writing-and-executing-queries"><i class="fa fa-check"></i><b>4.2.3</b> Writing and Executing Queries</a></li>
 <li class="chapter" data-level="4.2.4" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#subsetting-data"><i class="fa fa-check"></i><b>4.2.4</b> Subsetting Data</a></li>
 <li class="chapter" data-level="4.2.5" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#saving-downloading-bigquery-tables"><i class="fa fa-check"></i><b>4.2.5</b> Saving / Downloading BigQuery Tables</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html"><i class="fa fa-check"></i><b>4.3</b> Example: Calculate Fishing Hours</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#setup"><i class="fa fa-check"></i><b>4.3.1</b> Setup</a></li>
+<li class="chapter" data-level="4.3.2" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#query-data"><i class="fa fa-check"></i><b>4.3.2</b> Query Data</a></li>
+<li class="chapter" data-level="4.3.3" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#map-fishing-effort"><i class="fa fa-check"></i><b>4.3.3</b> Map Fishing Effort</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="5-additional-resources.html"><a href="5-additional-resources.html"><i class="fa fa-check"></i><b>5</b> Additional Resources</a><ul>
@@ -176,7 +181,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="core-ais-datasets-and-assumptions" class="section level2">
 <h2><span class="header-section-number">3.1</span> Core AIS Datasets and Assumptions</h2>
-<p>The <code>world-fishing-827</code> project has four main AIS datasets for general analysis: <code>pipe_production_vYYYYMMDD</code>, <code>gfw_research</code>, <code>anchorages</code>, and <code>vessel_database</code>.
+<p>The <code>world-fishing-827</code> project has many datasets but the following five are the most commonly used: <code>pipe_production_vYYYYMMDD</code>, <code>pipe_static</code>, <code>gfw_research</code>, <code>anchorages</code>, and <code>vessel_database</code>.
 <br><br />
 <code>pipe_production_vYYYYMMDD</code></p>
 <p>This is GFW’s core internal dataset and is the output of the pipeline, which is a process that automates parsing, cleaning, augmenting, and publishing the raw AIS data. In most cases, queries should use the research tables in <code>gfw_research</code> not the pipeline tables. However, the following are some tables that are only found in the pipeline which may be useful to emLab researchers:</p>
@@ -185,64 +190,81 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li>List of port events by vessel id (not ssvid)<br />
 </li>
-<li>Important fields: vessel_id, timestamp, anchorage_id<br />
+<li>Important fields: vessel_id, start_timestamp, end_timestamp, start_anchorage_id , end_anchorage_id<br />
+</li>
+<li>Relationship to other tables: match the <code>vessel_id</code> to the <code>vessel_id</code> field of the <code>pipe_production_vYYYYMMDD.vessel_info</code> table to obtain an <code>ssvid</code>. The <code>ssvid</code> can then be used to relate port events to other AIS data such as vessel tracks or characteristics. Match the start or end <code>anchorage_id</code> to the <code>s2id</code> in the <code>anchorages.named_anchorages_vYYYYMMDD</code> table to obtain information for the anchorages such as location, name, and EEZ<br />
 </li>
 <li>Assumptions: Port events are individual events composed of a port entry/port exit pair. A port entry occurs when the vessel comes within 3 km of an anchorage point and the port exit occurs when the vessel is more than 4 km from an anchorage point<br />
 </li>
 <li>The port events table is organized daily. To select all events from a year (for example 2020) use <code>world-fishing-827.pipe_production_vYYYYMMDD.port_events_2020*</code>, or select a single day (for example 1.1.20) to reduce query size and cost using <code>world-fishing-827.pipe_production_vYYYYMMDD.port_events_20200101</code></li>
 </ul></li>
-<li><code>port_visits_YYYYMMDD</code>
-<ul>
-<li>List of port visits by vessel id (not ssvid)<br />
-</li>
-<li>Important fields: vessel_id, start_anchorage_id, end_anchorage_id, start_timestamp, end_timestamp<br />
-</li>
-<li>Assumptions: port visits must include a port entry, a port stop or a port gap, and a port exit. Port stops begin when the vessel speed is &lt; 0.2 knots and ends when the vessel speed is &gt; 0.5 knots. Port gaps are defined as gaps in AIS transmission for more than 4 hours<br />
-</li>
-<li>The port visits table is also organized daily and can be subsetted and queried in the same way as the port events table</li>
-</ul></li>
 <li><code>published_events_encounters</code>
 <ul>
-<li>List of encounter events; each encounter event is listed twice with the event_id field ending in .1 or .2 to distinguish between the first and second vessel involved<br />
+<li>List of encounter events; each encounter event is listed twice with the <code>event_id</code> field ending in .1 or .2 to distinguish between the first and second vessel involved<br />
 </li>
-<li>Important fields: event_id, vessel_id, event_start, event_end<br />
+<li>Important fields: event_id, vessel_id, event_start, event_end, event_info, lat_mean, lon_mean<br />
 </li>
-<li>Assumptions: 2 vessels within 500 meters of each other, traveling &lt; 2 knots, minimum duration of 2 hours, and at least 10 km from a coastal anchorage</li>
-</ul></li>
-<li><code>spatial_measures_YYYYMMDD</code>
-<ul>
-<li>Spatial information (for EEZs, RMFOs etc.) by gridded longitude, latitude<br />
+<li>Relationship to other tables: match the <code>vessel_id</code> to the <code>vessel_id</code> field of the <code>pipe_production_vYYYYMMDD.vessel_info</code> table to obtain an <code>ssvid</code>. The <code>ssvid</code> can then be used to relate encounters to other AIS data such as vessel tracks or characteristics<br />
 </li>
-<li>Important fields: gridcode, regions record<br />
-</li>
-<li>Assumptions: Gridded longitude, latitude (WGS84) at 0.01 resolution</li>
+<li>Assumptions: 2 vessels within 500 meters of each other, traveling &lt; 2 knots, minimum duration of 2 hours, and at least 10 km from a coastal anchorage. Encounter events and loitering events may overlap (i.e. if a vessel’s behavior fits the loitering definition and within the same timeframe there is an encounter event it will be listed on both tables representing the same possible transshipment event)</li>
 </ul></li>
 <li><code>voyages</code>
 <ul>
 <li>List of voyages by ssvid<br />
 </li>
-<li>Important fields: ssvid, vessel_id, trip_id, trip_start_anchorage_id, trip_end_anchorage_id<br />
+<li>Important fields: ssvid, vessel_id, trip_id, trip_start_anchorage_id, trip_end_anchorage_id, trip_start, trip_end<br />
+</li>
+<li>Relationship to other tables: <code>ssvid</code> can be used to relate the vessel to other AIS data such as vessel tracks or characteristics. The start or end <code>trip_anchorage_id</code> can be matched to the <code>s2id</code> in the <code>anchorages.named_anchorages_vYYYYMMDD</code> table to obtain information on the anchorages such as location, name, and EEZ<br />
 </li>
 <li>Assumptions: voyages are a port exit/port entry pair, following a vessel from when it leaves a port to the next time it enters a port<br />
-<br></li>
+<br><br />
+<code>pipe_static</code></li>
 </ul></li>
 </ul>
-<p><code>gfw_research</code></p>
+<p>These are static data tables used by the GFW data pipeline. These are sources that change infrequently and are generally used as lookup tables in the pipeline but which may also be useful as lookup tables in emLab projects.</p>
+<ul>
+<li><code>regions</code>
+<ul>
+<li>Region information (for EEZs, RMFOs, FAO region, MPAs etc.) for each longitude, latitude grid cell<br />
+</li>
+<li>Important fields: gridcode, regions.eez, regions.mpant, regions.mparu, regions.rfmo, regions.major_fao<br />
+</li>
+<li>Relationship to other tables: the gridded lon/lat can be used to spatially join the table to other AIS data of the same resolution<br />
+</li>
+<li>Assumptions: Gridded longitude, latitude (WGS84) at 0.01 resolution</li>
+</ul></li>
+<li><code>spatial_measures</code>
+<ul>
+<li>Distance from shore and depth for each longitude, latitude grid cell<br />
+</li>
+<li>Important fields: gridcode, distance_from_shore_m, elevation_m<br />
+</li>
+<li>Relationship to other tables: the gridded lon/lat can be used to spatially join the table to other AIS data of the same resolution<br />
+</li>
+<li>Assumptions: Gridded longitude, latitude (WGS84) at 0.01 resolution<br />
+<br>
+<code>gfw_research</code></li>
+</ul></li>
+</ul>
 <p>The second dataset <code>gfw_research</code>, is most commonly used by GFW research partners. These tables are versions of the pipeline tables that have been altered to make them more suitable and cost effective for analysis. The following are some tables that may be most relevant to emLab researchers:</p>
 <ul>
 <li><code>eez_info</code>
 <ul>
 <li>List of Exclusive Economic Zones (EEZ), can be used to add country names or ISO3 codes to the numeric EEZ id<br />
 </li>
-<li>Important fields: eez_id, territory1, territory1_iso3, sovereign1, sovereign1_iso3</li>
+<li>Important fields: eez_id, territory1, territory1_iso3, sovereign1, sovereign1_iso3<br />
+</li>
+<li>Relationship to other tables: the numeric EEZ id code (<code>eez_id</code>) can be matched to the <code>activity.eez.value</code> field of the vessel info tables (<code>vi_ssvid_byyyear_vYYYMMDD</code>) or to the <code>regions.eez</code> field of the <code>pipe_static.regions</code> and <code>pipe_vYYYYMMDD_fishing</code> tables to add country names, ISO3 codes, and other associated EEZ details</li>
 </ul></li>
 <li><code>fishing_vessels_ssvid_vYYYYMMDD</code>
 <ul>
-<li>Current best list of active fishing vessels by ssvid by year<br />
+<li>Current best list of active fishing vessels by ssvid by year. This list is the most restrictive filter for fishing vessels and contains fewer fishing vessels than the <code>gfw_research.vi_ssvid_byyear_vYYYYMMDD</code> table<br />
 </li>
-<li>Important fields: ssvid, year, best_flag best_vessel_class (gear type)<br />
+<li>Important fields: ssvid, year, best_flag, best_vessel_class (gear type)<br />
 </li>
-<li>Assumptions: MMSI is on_fishing_list_best, MMSI is not likely fishing gear based on shipname, MMSI is not offsetting its position, MMI did not broadcast 5 or more different shipnames in a year, MMSI is spoofed no more than 24 hours in a year, the MMSI was active enough for the nerual net to infer a vessel class, and the MMSI is active for at least 5 days and has at least 24 hours of fishing activity in a year</li>
+<li>Relationship to other tables: use the <code>ssvid</code> and <code>year</code> to match to other AIS data such as vessel tracks or characteristics<br />
+</li>
+<li>Assumptions: MMSI is on_fishing_list_best, MMSI is not likely fishing gear based on shipname, MMSI is not offsetting its position, MMSI did not broadcast 5 or more different shipnames in a year, MMSI is spoofed no more than 24 hours in a year, the MMSI was active enough for the nerual net to infer a vessel class, and the MMSI is active for at least 5 days and has at least 24 hours of fishing activity in a year</li>
 </ul></li>
 <li><code>loitering_events_2knots_vYYYYMMDD</code>
 <ul>
@@ -250,13 +272,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
 <li>Important fields: ssvid, loitering_start_timestamp, loitering_end_timestamp, loitering_hours, avg_distance_from_shore_nm, start_lon, start_lat, end_lon, end_lat<br />
 </li>
+<li>Relationship to other tables: use <code>ssvid</code> to match loitering events to other AIS data such as vessel tracks or characteristics<br />
+</li>
 <li>Assumptions: vessels are moving at &lt; 2 knots (includes all vessel types)</li>
 </ul></li>
 <li><code>pipe_vYYYYMMDD_fishing</code>
 <ul>
 <li>Table of fishing activity, best table to use to find active fishing positions<br />
 </li>
-<li>Important fields: seg_id, ssvid, timestamp, lat, lon, nnet_score2, regions records<br />
+<li>Important fields: seg_id, ssvid, timestamp, lat, lon, nnet_score, hours, night_loitering, regions records<br />
+</li>
+<li>Relationship to other tables: use <code>ssvid</code> to relate fishing positions to other vessel specific AIS data. The regions record has information on the location of the position including the EEZ id code <code>regions.eez</code>, which can be related to EEZ specific information in <code>eez_info</code> using the <code>eez_id</code><br />
 </li>
 <li>Assumptions: Vessels are listed on at least one of the fishing lists in the <code>vi_ssvid_byyyear_vYYYYMMDD</code> table<br />
 </li>
@@ -268,40 +294,62 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
 <li>Important fields: good_seg, positions, overlapping_and_short<br />
 </li>
+<li>Relationship to other tables: use the <code>seg_id</code> to match segments passing the quality filters to vessel position segments in <code>pipe_vYYYYMMDD_fishing</code><br />
+</li>
 <li>Assumptions: To be labeled as a <code>good_seg</code>, there are more than 5 positions, the vessel moves at least ~100 meters with an average speed &gt; 0, and the longitude is not between -0.109225 and 0.109225</li>
+</ul></li>
+<li><code>port_visits_no_overlapping_short_seg_vYYYYMMDD</code>
+<ul>
+<li>List of port visits by vessel id (not ssvid)<br />
+</li>
+<li>Important fields: ssvid, vessel_id, start_anchorage_id, end_anchorage_id, start_timestamp, end_timestamp<br />
+</li>
+<li>Relationship to other tables: use the <code>ssvid</code> to match to vessel tracks or characteristics. Match the start or end <code>anchorage_id</code> to the <code>s2id</code> in the <code>anchorages.named_anchorages_vYYYYMMDD</code> table to obtain information for the anchorages such as location, name, and EEZ<br />
+</li>
+<li>Assumptions: This table differs from <code>port_events_YYYYMMDD</code> because port visits must include a port entry, a port stop or a port gap, and a port exit. Port stops begin when the vessel speed is &lt; 0.2 knots and ends when the vessel speed is &gt; 0.5 knots. Port gaps are defined as gaps in AIS transmission for more than 4 hours</li>
 </ul></li>
 <li><code>vi_ssvid_byyear_vYYYYMMDD</code>
 <ul>
-<li>Summary of annual vessel activity and identity information by ssvid. This table is best used to summarize vessel activity (like fishing hours) by ssvid if specific position data (lat/lon) are not important. Queries should use good segments and the neural net score from the <code>pipe_vYYYYMMDD_fishing</code> table if position data are important<br />
+<li>Summary of annual vessel activity and identity information by ssvid. This table is best used to get a set of best vessel characteristics or summarize vessel activity (like fishing hours) by ssvid and year<br />
 </li>
 <li>Important fields: ssvid, year, activity records (summary of the amount and location of the vessel’s activity), best records (best vessel characteristics)<br />
+</li>
+<li>Relationship to other tables: the <code>ssvid</code> can be used to match vessel characteristics to vessel tracks in the <code>pipe_vYYYYMMDD_fishing</code><br />
+</li>
+<li>Assumptions: fishing hours are calculated by segment and summed by EEZ. If a segment boarders two EEZs fishing hours will be counted in both, therefore it’s possible for the sum of fishing hours in the <code>activity.eez.fishing_hours</code> to be greater than the total hours recorded in the <code>activity.fishing_hours</code> field. For a more accurate estimate of fishing hours, particularly binned fishing hours, use the <code>pipe_vYYYYMMDD_fishing</code> table and calculate fishing hours using the <code>nnet_score</code> by vessel, year, and grid cell. An example of calculating binned fishing effort is provided in Section 4.3.<br />
 <br></li>
 </ul></li>
 </ul>
 <p><code>anchorages</code></p>
-<p>The GFW data uses anchorages which are different from ports. The anchorage datset gridded the globe at approximately 0.5 km cells and identified grid cells where at least 20 individual vessels remained stationary from 2012-2019. Each location was assigned a unique anchorage id. Generally, there are many anchorages within a single port. More information about how anchorages are assigned can be found on the GFW <a href="https://globalfishingwatch.org/datasets-and-code/anchorages/">website</a>. The following table is likely the most useful for emLab researchers:</p>
+<p>The GFW data uses anchorages which are different from ports. The anchorage dataset gridded the globe at approximately 0.5 km cells and identified grid cells where at least 20 individual vessels remained stationary from 2012-2019. Each location was assigned a unique anchorage id. Generally, there are many anchorages within a single port. More information about how anchorages are assigned can be found on the GFW <a href="https://globalfishingwatch.org/datasets-and-code/anchorages/">website</a>. The following table is likely the most useful for emLab researchers:</p>
 <ul>
 <li><code>named_anchorages_vYYYYMMDD</code>
 <ul>
-<li>List of all named anchorages in the GFW data<br />
+<li>List of all named anchorages in the GFW data with associated information on location and EEZs<br />
 </li>
 <li>Important fields: s2id (anchorage id), iso3, lat, lon<br />
+</li>
+<li>Relationship to other tables: the <code>s2id</code> can be used to match to a start or end <code>anchorage_id</code> in the <code>pipe_production_vYYYYMMDD.port_events_YYYYMMDD</code>, <code>pipe_production_vYYYYMMDD.voyages</code>, and <code>gfw_research.port_visits_no_overlapping_short_seg_vYYYYMMDD</code> tables<br />
 </li>
 <li>Assumptions: at least 20 vessels remained stationary between 2012 and 2019<br />
 <br></li>
 </ul></li>
 </ul>
 <p><code>vessel_database</code></p>
-<p>The vessel database is a collection of tables tracking vessel registry information. This database is particularly useful for querying lists of non-fishing vessels, such as carriers. For lists of fishing vessels, it’s better to use <code>gfw_research.fishing_vessels_ssvid_vYYYYMMDD</code>. The following table may be the most useful to emLab researchers:</p>
+<p>The vessel database is a collection of tables tracking information from over 30 different vessel registries. The database provides historic registry information and can be used to track changes in vessel identities over time. This database is particularly useful for querying lists of non-fishing vessels, such as carriers. It is better to first use the <code>gfw_research.vi_ssvid_byyear_vYYYYMMDD</code> table when searching for vessel characteristics and then using vessel database for vessels that aren’t found in the vessel info table particularly non-fishing vessels. The following table may be the most useful to emLab researchers:</p>
 <ul>
 <li><code>all_vessels_vYYYYMMDD</code>
 <ul>
 <li>List of all vessels in the GFW database for all years<br />
 </li>
-<li>Important fields: identity records, feature records, is_carieer, registry records (especially registry.confidence)</li>
+<li>Important fields: matched, feature records, is_carrier, is_fishing, is_bunker, is_new<br />
+</li>
+<li>Relationship to other tables: use <code>ssvid</code> to match vessel registry information to other AIS data<br />
+</li>
+<li>The feature record summarizes vessel characteristics (geartype, length, engine power, tonnage, crew size) matched between AIS broadcasts and the vessel registries. In general this is the cleanest way to get vessel characteristics from the vessel database. The identity records summarize vessel characteristics broadcast over AIS and the registry record summarizes vessels characteristics from all the scraped vessel registries. The <code>is_carrier</code>, <code>is_fishing</code>, <code>is_bunker</code>, and <code>is_new</code> fields are helpful for easily filtering each category of vessels.</li>
 </ul></li>
 </ul>
-<p>The vesssel database is not comprehensive adn is only as good as the AIS and registry data. The dataset may contain typos or outdated records and caution should be used in analysis.</p>
+<p>The vesssel database is not comprehensive and is only as good as the AIS and registry data. The dataset may contain typos or outdated records and caution should be used in analysis.</p>
 </div>
             </section>
 
@@ -355,6 +403,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

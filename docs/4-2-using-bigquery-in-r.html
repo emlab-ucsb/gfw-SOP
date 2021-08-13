@@ -24,7 +24,7 @@
 <meta name="author" content="" />
 
 
-<meta name="date" content="2021-01-22" />
+<meta name="date" content="2021-08-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
   <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
 <link rel="prev" href="4-1-validation-with-bigquery.html"/>
-<link rel="next" href="5-additional-resources.html"/>
+<link rel="next" href="4-3-example-calculate-fishing-hours.html"/>
 <script src="assets/jquery-2.2.3/jquery.min.js"></script>
 <link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -141,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1" data-path="3-1-core-ais-datasets-and-assumptions.html"><a href="3-1-core-ais-datasets-and-assumptions.html"><i class="fa fa-check"></i><b>3.1</b> Core AIS Datasets and Assumptions</a></li>
 <li class="chapter" data-level="3.2" data-path="3-2-best-tables.html"><a href="3-2-best-tables.html"><i class="fa fa-check"></i><b>3.2</b> Best Tables</a></li>
 <li class="chapter" data-level="3.3" data-path="3-3-vms-datasets.html"><a href="3-3-vms-datasets.html"><i class="fa fa-check"></i><b>3.3</b> VMS Datasets</a></li>
-<li class="chapter" data-level="3.4" data-path="3-4-dark-targets-tables.html"><a href="3-4-dark-targets-tables.html"><i class="fa fa-check"></i><b>3.4</b> Dark Targets Tables</a></li>
+<li class="chapter" data-level="3.4" data-path="3-4-sarviirs-datasets.html"><a href="3-4-sarviirs-datasets.html"><i class="fa fa-check"></i><b>3.4</b> SAR/VIIRS Datasets</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="4-workflow.html"><a href="4-workflow.html"><i class="fa fa-check"></i><b>4</b> Workflow</a><ul>
 <li class="chapter" data-level="4.1" data-path="4-1-validation-with-bigquery.html"><a href="4-1-validation-with-bigquery.html"><i class="fa fa-check"></i><b>4.1</b> Validation with BigQuery</a></li>
@@ -151,6 +151,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.2.3" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#writing-and-executing-queries"><i class="fa fa-check"></i><b>4.2.3</b> Writing and Executing Queries</a></li>
 <li class="chapter" data-level="4.2.4" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#subsetting-data"><i class="fa fa-check"></i><b>4.2.4</b> Subsetting Data</a></li>
 <li class="chapter" data-level="4.2.5" data-path="4-2-using-bigquery-in-r.html"><a href="4-2-using-bigquery-in-r.html#saving-downloading-bigquery-tables"><i class="fa fa-check"></i><b>4.2.5</b> Saving / Downloading BigQuery Tables</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html"><i class="fa fa-check"></i><b>4.3</b> Example: Calculate Fishing Hours</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#setup"><i class="fa fa-check"></i><b>4.3.1</b> Setup</a></li>
+<li class="chapter" data-level="4.3.2" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#query-data"><i class="fa fa-check"></i><b>4.3.2</b> Query Data</a></li>
+<li class="chapter" data-level="4.3.3" data-path="4-3-example-calculate-fishing-hours.html"><a href="4-3-example-calculate-fishing-hours.html#map-fishing-effort"><i class="fa fa-check"></i><b>4.3.3</b> Map Fishing Effort</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="5-additional-resources.html"><a href="5-additional-resources.html"><i class="fa fa-check"></i><b>5</b> Additional Resources</a><ul>
@@ -185,8 +190,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="accessing-data" class="section level3">
 <h3><span class="header-section-number">4.2.2</span> Accessing Data</h3>
-<p>When writing SQL data can be accessed using three pieces of information: the project, the dataset, and the table. This should follow the syntax project.dataset.table. Specifying the project first is important. SQL will only be able to find datasets and tables within the billing project (e.g. <code>emlab-gcp</code>) if no project is specified. For example when <code>emlab-gcp</code> is set as the billing project, trying to access the <code>eez_info</code> table using <code>gfw_research.eez_info</code> produces an error that the table does not exist. Adding the project first, <code>world-fishing-827.gfw_research.eez_info</code> fixes the query.</p>
-<p><img src="images/table_error_annotated.png" style="width:50.0%;height:50.0%" /></p>
+<p>When writing SQL, data can be accessed using three pieces of information: the project, the dataset, and the table. This should follow the syntax project.dataset.table. Specifying the project first is important. SQL will only be able to find datasets and tables within the billing project (e.g. <code>emlab-gcp</code>) if no project is specified. For example when <code>emlab-gcp</code> is set as the billing project, trying to access the <code>eez_info</code> table using <code>gfw_research.eez_info</code> produces an error that the table does not exist. Adding the project first, <code>world-fishing-827.gfw_research.eez_info</code> fixes the query.</p>
+<p><img src="images/table_error_updated_annotated.png" style="width:50.0%;height:50.0%" /></p>
 <p>Best practice is to always specify the project since this reduces potential errors if others replicate your code using a different billing project.</p>
 </div>
 <div id="writing-and-executing-queries" class="section level3">
@@ -419,7 +424,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="subsetting-data" class="section level3">
 <h3><span class="header-section-number">4.2.4</span> Subsetting Data</h3>
-<p>Some queries may be expensive to run and output large amounts of data. To check results from queries or to make sure they work correctly, it may be necessary to subset the data. Tables that are partitioned are divided up into smaller segments and can be easily subsetted to reduce query size and cost. A common technique for subsetting data is to restrict the date range to a single day. This can be accomplished using WHERE plus a date filter (like _PARTIONTIME) although the specific notation will depend on if the data are represented as a date or a timestamp. Partitioned tables are noted in Section 3 and more information on partitioned tables can be found in the BigQuery <a href="https://cloud.google.com/bigquery/docs/partitioned-tables?_ga=2.76664789.-1147900105.1599252261">documentation</a>.</p>
+<p>Some queries may be expensive to run and output large amounts of data. To check results from queries or to make sure they work correctly, it may be necessary to subset the data. Tables that are partitioned are divided up into smaller segments and can be easily subsetted to reduce query size and cost. A common technique for testing queries is to restrict the date range to a single day. This can be accomplished using WHERE plus a date filter (like <code>_PARTITIONTIME</code>) although the specific notation will depend on if the data are represented as a date or a timestamp.</p>
+<p>Another option to test queries is to use the <code>emlab-gcp.emlab_test</code> dataset. This dataset holds a smaller version of the<br />
+<code>gfw_research.pipe_vYYYYMMDD_fishing</code> table containing only data from 2020. This table is meant to allow for testing and checking query results before a full query is run using the <code>pipe_vYYYYMMDD_fishing</code> table. The table <code>pipe_v20201001_fishing_subset2020</code> is still 485.5 GB so it’s recommended to further subset the table when testing out queries.</p>
+<p>Generally, partitioned tables are noted in BigQuery with a message under the ‘Details’ tab and more information about how the table is partitioned is available in the Table Info. In particular, the <code>partitioned on field</code> lets the user know what the partitioning field is which can help determine the proper syntax. The figure below illustrates the difference in partitioning fields between the source <code>pipe_v20201001_fishing</code> table and the <code>pipe_v20201001_fishing_subset2020</code> table. The Table Info for the <code>world-fishing-827.gfw_research.pipe_v20201001_fishing</code> table indicates it is partioned on <code>_PARTITIONTIME</code>, which makes <code>WHERE _PARTITIONTIME = 'date'</code> the proper syntax for querying a single day of data from this table as illustrated in the example below. The <code>emlab-gcp.emlab_test.pipe_v20201001_fishing_subset2020</code> Table Info shows the partitioning field is <code>timestamp</code> which makes <code>WHERE timestamp = 'date'</code> the correct way to filter for a single day of data. An example of querying fishing effort using this test table is provided in Section 4.3. Partitioning will have the lagest impact on query size but there are other ways to reduce the size and cost of your queries including selecting only columns you need and filtering based on clustered columns (such as ssvid in the <code>pipe_vYYYYMMDD_fishing</code> table). The clustered columns are also noted in the Table Info below the partitioning section and more information on how clustering reduces query size and cost can be found in the BigQuery <a href="https://cloud.google.com/bigquery/docs/clustered-tables">documentation</a>. GFW tables that are partioned are also noted in the table descriptions in Section 3 and more information on partioned tables can be found in the BigQuery <a href="https://cloud.google.com/bigquery/docs/partitioned-tables?_ga=2.76664789.-1147900105.1599252261">documentation</a>.</p>
+<p><img src="images/partitioned_emlab_annotated.png" style="width:50.0%;height:50.0%" /> <img src="images/partitioned_gfw_annotated.png" style="width:50.0%;height:50.0%" /></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co">#############################################################</span></a>
 <a class="sourceLine" id="cb6-2" data-line-number="2"><span class="co"># Example Query: Fishing hours for January 1, 2019 </span></a>
 <a class="sourceLine" id="cb6-3" data-line-number="3"><span class="co"># Description:</span></a>
@@ -484,15 +493,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb6-62" data-line-number="62"><span class="st">  ###############################</span></a>
 <a class="sourceLine" id="cb6-63" data-line-number="63"><span class="st">  </span></a>
 <a class="sourceLine" id="cb6-64" data-line-number="64"><span class="st">  SELECT * FROM fishing_hours&quot;</span></a></code></pre></div>
-<p>While there are other techniques for subsetting such as using a list of ssvids, specifying flags, or restricting to a certain gear type, these will not reduce the size and cost of the query. Only filtering based on a partitioned column will affect the size of the query. Generally, partitioned tables are noted in BigQuery with a message under the ‘Details’ tab and more information about how the table is partitioned is available in the Table Info.</p>
-<p><img src="images/partitioned_annotated.png" style="width:50.0%;height:50.0%" /></p>
 </div>
 <div id="saving-downloading-bigquery-tables" class="section level3">
 <h3><span class="header-section-number">4.2.5</span> Saving / Downloading BigQuery Tables</h3>
 <p>In some cases you might want to save your query results directly to BigQuery. For example, it may be easier to store large tables in BigQuery than trying to work with large amounts of data in R. A large table can then be further queried and subsetted before working with the data in R. Additionally, it may be useful to store tables in BigQuery if you plan to join them with other data stored in BigQuery. For instance, a table of spatial boundaries may be useful to store on BigQuery for spatially filtering data from other BigQuery tables to a specific region of interest. Tables can be saved to BigQuery using either <code>bigrquery::bq_project_query()</code> or <code>DBI::dbWriteTable()</code>. Using the <code>bq_project_query()</code> function allows you to execute the query and save the results as a new table in BigQuery in a single step by adding the <code>destination_table</code> argument. When using DBI you need to execute the query first and then write the results to the database.</p>
 <p>Datasets and tables should only be created in the <code>emlab-gcp</code> project. Datasets need to be created before tables can be saved there and can be created in the BigQuery console or in R using <code>bq_dataset_create()</code>. In the BigQuery console datasets can be created by navigating to the <code>emlab-gcp</code> project and selecting the ‘Create Dataset’ button. The default settings for creating the dataset are fine to keep, only the dataset name needs to be added. Once the dataset is created, refreshing the window should show the new dataset on the left hand side nested under the <code>emlab-gcp</code> project.</p>
-<p><img src="images/create_dataset_annotated.png" style="width:50.0%;height:50.0%" /></p>
-<p>Best practices for naming datasets is to use the official project name, the same one used for the GitHub respository, Google Drive, and other project materials. For tables, names should be descriptive and meaningful. It is advised to follow them emLab SOP guidance in <a href="https://emlab-ucsb.github.io/SOP/3-1-data-file-naming.html">Section 3.1</a> for file naming, specifically using only lower case letters, using ’_’ to separate words, and avoiding ‘-’, ‘.’ and other special characters.</p>
+<p><img src="images/create_dataset_updated_annotated.png" style="width:50.0%;height:50.0%" /></p>
+<p>Best practices for naming datasets is to use the official project name, the same one used for the GitHub respository, Google Drive, and other project materials. For tables, names should be descriptive and meaningful. It is advised to follow them emLab SOP guidance in <a href="https://emlab-ucsb.github.io/SOP/3-1-data-file-naming.html">Section 3.1</a> for file naming, specifically using only lower case letters, using ’_’ to separate words, and avoiding ‘-’, ‘.’ and other special characters. After tables are created it’s recommended to go to the BigQuery console and update the description and schema of the table. Providing a link in the description to the markdown file with the query used to generate the table is helpful for reproducibility in future.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">bq_project_query</span>(<span class="st">&quot;emlab-gcp&quot;</span>,</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">                 sql_fishing_hours,</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3">                 <span class="dt">destination_table =</span> <span class="kw">bq_table</span>(<span class="dt">project =</span> <span class="st">&quot;emlab-gcp&quot;</span>,</a>
@@ -500,7 +507,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb7-5" data-line-number="5">                                              <span class="dt">dataset =</span> <span class="st">&quot;project_name&quot;</span>),</a>
 <a class="sourceLine" id="cb7-6" data-line-number="6">                 <span class="dt">use_legacy_sql =</span> <span class="ot">FALSE</span>, <span class="dt">allowLargeResults =</span> <span class="ot">TRUE</span>)<span class="er">)</span></a></code></pre></div>
 <p>These tables now live in BigQuery. If you return to the BigQuery console and refresh it, you should see the table nested under <code>emlab-gcp</code> and the dataset name.</p>
-<p><img src="images/add_tables_annotated.png" style="width:50.0%;height:50.0%" /></p>
+<p><img src="images/add_tables_updated_annotated.png" style="width:50.0%;height:50.0%" /></p>
 <p>These tables can now be called directly in future queries and can be downloaded in R at any time using either <code>bigrquery::bq_table_download()</code> or <code>DBI::dbReadTable()</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># Download table using bigrquery</span></a>
 <a class="sourceLine" id="cb8-2" data-line-number="2">fishing_hours &lt;-<span class="st"> </span><span class="kw">bq_table_download</span>(<span class="st">&quot;emlab-gcp.project_name.fishing_hours_20190101&quot;</span>,</a>
@@ -517,17 +524,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb8-13" data-line-number="13">fishing_hours_dbi &lt;-<span class="st"> </span><span class="kw">dbReadTable</span>(bq_connection,</a>
 <a class="sourceLine" id="cb8-14" data-line-number="14">                                 <span class="st">&quot;emlab-gcp.project_name.fishing_hours_20190101&quot;</span>)</a></code></pre></div>
 <p>It is important to remember to save any data at the end of the R session to avoid having to re-run queries every time you open the project.</p>
-
 </div>
 </div>
-<!-- </div> -->
             </section>
 
           </div>
         </div>
       </div>
 <a href="4-1-validation-with-bigquery.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="5-additional-resources.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="4-3-example-calculate-fishing-hours.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="assets/gitbook-2.6.7/js/app.min.js"></script>
@@ -573,6 +578,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>
