@@ -511,11 +511,10 @@ WITH
     hours,
     nnet_score
   FROM 
-    `emlab-gcp.emlab_test.pipe_v20201001_fishing_subset2020`
+    `emlab-gcp.emlab_test.pipe_v20201001_fishing_jan2020`
   WHERE 
-  # Keep only data for January 2020 
-    timestamp <= '2020-01-31'
-  AND seg_id IN(
+  # Keep only good segments 
+  seg_id IN(
     SELECT 
       seg_id
     FROM 
@@ -550,12 +549,12 @@ WITH
   ),
 
   ##################################
-  # Calculating fishing hours for 
-  # each position 
+  # Aggregate fishing hours by
+  # grid cell 
 
   fishing_binned AS (
   SELECT
-    # Convert lat/lon to 0.1 degree bins and numeric values
+    # Convert lat/lon to 0.1 degree bins
     FLOOR(lat * 10) / 10  AS lat_bin,
     FLOOR(lon * 10) / 10 AS lon_bin,
     SUM(hours) as hours,
@@ -623,10 +622,10 @@ fishing_map <- ggplot() +
         legend.key.height = unit(3, "mm"), 
         legend.key.width = unit(20, "mm"),
         legend.title.align = 0.5,
-        legend.text = element_text(color = "#848b9b", size = 12), 
-        legend.title = element_text(color = "#363c4c", size = 12), 
-        plot.title = element_text(color = "#363c4c", size = 14), 
-        plot.subtitle = element_text(color = "#363c4c", size = 14), 
+        legend.text = element_text(color = "#848b9b", size = 10), 
+        legend.title = element_text(color = "#363c4c", size = 10), 
+        plot.title = element_text(color = "#363c4c", size = 12), 
+        plot.subtitle = element_text(color = "#363c4c", size = 12), 
         axis.title = element_blank(), 
         axis.text = element_text(size = 6)) 
 ```
