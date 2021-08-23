@@ -24,7 +24,7 @@
 <meta name="author" content="" />
 
 
-<meta name="date" content="2021-08-13" />
+<meta name="date" content="2021-08-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -252,61 +252,60 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb10-46" data-line-number="46"><span class="st">    hours,</span></a>
 <a class="sourceLine" id="cb10-47" data-line-number="47"><span class="st">    nnet_score</span></a>
 <a class="sourceLine" id="cb10-48" data-line-number="48"><span class="st">  FROM </span></a>
-<a class="sourceLine" id="cb10-49" data-line-number="49"><span class="st">    `emlab-gcp.emlab_test.pipe_v20201001_fishing_subset2020`</span></a>
+<a class="sourceLine" id="cb10-49" data-line-number="49"><span class="st">    `emlab-gcp.emlab_test.pipe_v20201001_fishing_jan2020`</span></a>
 <a class="sourceLine" id="cb10-50" data-line-number="50"><span class="st">  WHERE </span></a>
-<a class="sourceLine" id="cb10-51" data-line-number="51"><span class="st">  # Keep only data for January 2020 </span></a>
-<a class="sourceLine" id="cb10-52" data-line-number="52"><span class="st">    timestamp &lt;= &#39;2020-01-31&#39;</span></a>
-<a class="sourceLine" id="cb10-53" data-line-number="53"><span class="st">  AND seg_id IN(</span></a>
-<a class="sourceLine" id="cb10-54" data-line-number="54"><span class="st">    SELECT </span></a>
-<a class="sourceLine" id="cb10-55" data-line-number="55"><span class="st">      seg_id</span></a>
-<a class="sourceLine" id="cb10-56" data-line-number="56"><span class="st">    FROM </span></a>
-<a class="sourceLine" id="cb10-57" data-line-number="57"><span class="st">      good_segments</span></a>
-<a class="sourceLine" id="cb10-58" data-line-number="58"><span class="st">   )</span></a>
-<a class="sourceLine" id="cb10-59" data-line-number="59"><span class="st">  ),</span></a>
-<a class="sourceLine" id="cb10-60" data-line-number="60"></a>
-<a class="sourceLine" id="cb10-61" data-line-number="61"><span class="st">  ##################################</span></a>
-<a class="sourceLine" id="cb10-62" data-line-number="62"><span class="st">  # Filter fishing positions for </span></a>
-<a class="sourceLine" id="cb10-63" data-line-number="63"><span class="st">  # only our vessels of interest</span></a>
-<a class="sourceLine" id="cb10-64" data-line-number="64"></a>
-<a class="sourceLine" id="cb10-65" data-line-number="65"><span class="st">  fishing_filtered AS (</span></a>
-<a class="sourceLine" id="cb10-66" data-line-number="66"><span class="st">  SELECT </span></a>
-<a class="sourceLine" id="cb10-67" data-line-number="67"><span class="st">    *</span></a>
-<a class="sourceLine" id="cb10-68" data-line-number="68"><span class="st">  FROM </span></a>
-<a class="sourceLine" id="cb10-69" data-line-number="69"><span class="st">    fishing_positions</span></a>
-<a class="sourceLine" id="cb10-70" data-line-number="70"><span class="st">  JOIN longline_vessels_2020</span></a>
-<a class="sourceLine" id="cb10-71" data-line-number="71"><span class="st">  # Only keep positions for fishing vessels active that year</span></a>
-<a class="sourceLine" id="cb10-72" data-line-number="72"><span class="st">  USING(ssvid, year)</span></a>
-<a class="sourceLine" id="cb10-73" data-line-number="73"><span class="st">  ),</span></a>
-<a class="sourceLine" id="cb10-74" data-line-number="74"></a>
-<a class="sourceLine" id="cb10-75" data-line-number="75"><span class="st">  ##################################</span></a>
-<a class="sourceLine" id="cb10-76" data-line-number="76"><span class="st">  # Calculating fishing hours for </span></a>
-<a class="sourceLine" id="cb10-77" data-line-number="77"><span class="st">  # each position </span></a>
-<a class="sourceLine" id="cb10-78" data-line-number="78"></a>
-<a class="sourceLine" id="cb10-79" data-line-number="79"><span class="st">  calc_fishing_hours AS (</span></a>
-<a class="sourceLine" id="cb10-80" data-line-number="80"><span class="st">  SELECT </span></a>
-<a class="sourceLine" id="cb10-81" data-line-number="81"><span class="st">    *,</span></a>
-<a class="sourceLine" id="cb10-82" data-line-number="82"><span class="st">    IF(nnet_score = 1, hours, 0) As fishing_hours</span></a>
-<a class="sourceLine" id="cb10-83" data-line-number="83"><span class="st">  FROM </span></a>
-<a class="sourceLine" id="cb10-84" data-line-number="84"><span class="st">    fishing_filtered</span></a>
-<a class="sourceLine" id="cb10-85" data-line-number="85"><span class="st">  ),</span></a>
-<a class="sourceLine" id="cb10-86" data-line-number="86"></a>
-<a class="sourceLine" id="cb10-87" data-line-number="87"><span class="st">  ##################################</span></a>
-<a class="sourceLine" id="cb10-88" data-line-number="88"><span class="st">  # Calculating fishing hours for </span></a>
-<a class="sourceLine" id="cb10-89" data-line-number="89"><span class="st">  # each position </span></a>
-<a class="sourceLine" id="cb10-90" data-line-number="90"></a>
-<a class="sourceLine" id="cb10-91" data-line-number="91"><span class="st">  fishing_binned AS (</span></a>
-<a class="sourceLine" id="cb10-92" data-line-number="92"><span class="st">  SELECT</span></a>
-<a class="sourceLine" id="cb10-93" data-line-number="93"><span class="st">    # Convert lat/lon to 0.1 degree bins and numeric values</span></a>
-<a class="sourceLine" id="cb10-94" data-line-number="94"><span class="st">    FLOOR(lat * 10) / 10  AS lat_bin,</span></a>
-<a class="sourceLine" id="cb10-95" data-line-number="95"><span class="st">    FLOOR(lon * 10) / 10 AS lon_bin,</span></a>
-<a class="sourceLine" id="cb10-96" data-line-number="96"><span class="st">    SUM(hours) as hours,</span></a>
-<a class="sourceLine" id="cb10-97" data-line-number="97"><span class="st">    SUM(fishing_hours) as fishing_hours</span></a>
-<a class="sourceLine" id="cb10-98" data-line-number="98"><span class="st">  FROM </span></a>
-<a class="sourceLine" id="cb10-99" data-line-number="99"><span class="st">    calc_fishing_hours</span></a>
-<a class="sourceLine" id="cb10-100" data-line-number="100"><span class="st">  GROUP BY lat_bin, lon_bin</span></a>
-<a class="sourceLine" id="cb10-101" data-line-number="101"><span class="st">  )</span></a>
-<a class="sourceLine" id="cb10-102" data-line-number="102"></a>
-<a class="sourceLine" id="cb10-103" data-line-number="103"><span class="st">  SELECT * FROM fishing_binned&quot;</span></a></code></pre></div>
+<a class="sourceLine" id="cb10-51" data-line-number="51"><span class="st">  # Keep only good segments </span></a>
+<a class="sourceLine" id="cb10-52" data-line-number="52"><span class="st">  seg_id IN(</span></a>
+<a class="sourceLine" id="cb10-53" data-line-number="53"><span class="st">    SELECT </span></a>
+<a class="sourceLine" id="cb10-54" data-line-number="54"><span class="st">      seg_id</span></a>
+<a class="sourceLine" id="cb10-55" data-line-number="55"><span class="st">    FROM </span></a>
+<a class="sourceLine" id="cb10-56" data-line-number="56"><span class="st">      good_segments</span></a>
+<a class="sourceLine" id="cb10-57" data-line-number="57"><span class="st">   )</span></a>
+<a class="sourceLine" id="cb10-58" data-line-number="58"><span class="st">  ),</span></a>
+<a class="sourceLine" id="cb10-59" data-line-number="59"></a>
+<a class="sourceLine" id="cb10-60" data-line-number="60"><span class="st">  ##################################</span></a>
+<a class="sourceLine" id="cb10-61" data-line-number="61"><span class="st">  # Filter fishing positions for </span></a>
+<a class="sourceLine" id="cb10-62" data-line-number="62"><span class="st">  # only our vessels of interest</span></a>
+<a class="sourceLine" id="cb10-63" data-line-number="63"></a>
+<a class="sourceLine" id="cb10-64" data-line-number="64"><span class="st">  fishing_filtered AS (</span></a>
+<a class="sourceLine" id="cb10-65" data-line-number="65"><span class="st">  SELECT </span></a>
+<a class="sourceLine" id="cb10-66" data-line-number="66"><span class="st">    *</span></a>
+<a class="sourceLine" id="cb10-67" data-line-number="67"><span class="st">  FROM </span></a>
+<a class="sourceLine" id="cb10-68" data-line-number="68"><span class="st">    fishing_positions</span></a>
+<a class="sourceLine" id="cb10-69" data-line-number="69"><span class="st">  JOIN longline_vessels_2020</span></a>
+<a class="sourceLine" id="cb10-70" data-line-number="70"><span class="st">  # Only keep positions for fishing vessels active that year</span></a>
+<a class="sourceLine" id="cb10-71" data-line-number="71"><span class="st">  USING(ssvid, year)</span></a>
+<a class="sourceLine" id="cb10-72" data-line-number="72"><span class="st">  ),</span></a>
+<a class="sourceLine" id="cb10-73" data-line-number="73"></a>
+<a class="sourceLine" id="cb10-74" data-line-number="74"><span class="st">  ##################################</span></a>
+<a class="sourceLine" id="cb10-75" data-line-number="75"><span class="st">  # Calculating fishing hours for </span></a>
+<a class="sourceLine" id="cb10-76" data-line-number="76"><span class="st">  # each position </span></a>
+<a class="sourceLine" id="cb10-77" data-line-number="77"></a>
+<a class="sourceLine" id="cb10-78" data-line-number="78"><span class="st">  calc_fishing_hours AS (</span></a>
+<a class="sourceLine" id="cb10-79" data-line-number="79"><span class="st">  SELECT </span></a>
+<a class="sourceLine" id="cb10-80" data-line-number="80"><span class="st">    *,</span></a>
+<a class="sourceLine" id="cb10-81" data-line-number="81"><span class="st">    IF(nnet_score = 1, hours, 0) As fishing_hours</span></a>
+<a class="sourceLine" id="cb10-82" data-line-number="82"><span class="st">  FROM </span></a>
+<a class="sourceLine" id="cb10-83" data-line-number="83"><span class="st">    fishing_filtered</span></a>
+<a class="sourceLine" id="cb10-84" data-line-number="84"><span class="st">  ),</span></a>
+<a class="sourceLine" id="cb10-85" data-line-number="85"></a>
+<a class="sourceLine" id="cb10-86" data-line-number="86"><span class="st">  ##################################</span></a>
+<a class="sourceLine" id="cb10-87" data-line-number="87"><span class="st">  # Aggregate fishing hours by</span></a>
+<a class="sourceLine" id="cb10-88" data-line-number="88"><span class="st">  # grid cell </span></a>
+<a class="sourceLine" id="cb10-89" data-line-number="89"></a>
+<a class="sourceLine" id="cb10-90" data-line-number="90"><span class="st">  fishing_binned AS (</span></a>
+<a class="sourceLine" id="cb10-91" data-line-number="91"><span class="st">  SELECT</span></a>
+<a class="sourceLine" id="cb10-92" data-line-number="92"><span class="st">    # Convert lat/lon to 0.1 degree bins</span></a>
+<a class="sourceLine" id="cb10-93" data-line-number="93"><span class="st">    FLOOR(lat * 10) / 10  AS lat_bin,</span></a>
+<a class="sourceLine" id="cb10-94" data-line-number="94"><span class="st">    FLOOR(lon * 10) / 10 AS lon_bin,</span></a>
+<a class="sourceLine" id="cb10-95" data-line-number="95"><span class="st">    SUM(hours) as hours,</span></a>
+<a class="sourceLine" id="cb10-96" data-line-number="96"><span class="st">    SUM(fishing_hours) as fishing_hours</span></a>
+<a class="sourceLine" id="cb10-97" data-line-number="97"><span class="st">  FROM </span></a>
+<a class="sourceLine" id="cb10-98" data-line-number="98"><span class="st">    calc_fishing_hours</span></a>
+<a class="sourceLine" id="cb10-99" data-line-number="99"><span class="st">  GROUP BY lat_bin, lon_bin</span></a>
+<a class="sourceLine" id="cb10-100" data-line-number="100"><span class="st">  )</span></a>
+<a class="sourceLine" id="cb10-101" data-line-number="101"></a>
+<a class="sourceLine" id="cb10-102" data-line-number="102"><span class="st">  SELECT * FROM fishing_binned&quot;</span></a></code></pre></div>
 <p>Run the query and write the results as a table (<code>test_fishing_hours_jan2020_tenthdegree</code>) in BigQuery. This way the query doesn’t have to be re-run every time the SOP gets updated. Instead, we just download the table we created into the working environment. Using the BigQuery console to validate the query it will bill ~12 GB (&lt; $1).</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">bq_project_query</span>(<span class="st">&quot;emlab-gcp&quot;</span>, <span class="co">#Billing project</span></a>
 <a class="sourceLine" id="cb11-2" data-line-number="2">                 sql_fishing_hours, <span class="co">#Query string object</span></a>
@@ -357,10 +356,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb12-36" data-line-number="36">        <span class="dt">legend.key.height =</span> <span class="kw">unit</span>(<span class="dv">3</span>, <span class="st">&quot;mm&quot;</span>), </a>
 <a class="sourceLine" id="cb12-37" data-line-number="37">        <span class="dt">legend.key.width =</span> <span class="kw">unit</span>(<span class="dv">20</span>, <span class="st">&quot;mm&quot;</span>),</a>
 <a class="sourceLine" id="cb12-38" data-line-number="38">        <span class="dt">legend.title.align =</span> <span class="fl">0.5</span>,</a>
-<a class="sourceLine" id="cb12-39" data-line-number="39">        <span class="dt">legend.text =</span> <span class="kw">element_text</span>(<span class="dt">color =</span> <span class="st">&quot;#848b9b&quot;</span>, <span class="dt">size =</span> <span class="dv">12</span>), </a>
-<a class="sourceLine" id="cb12-40" data-line-number="40">        <span class="dt">legend.title =</span> <span class="kw">element_text</span>(<span class="dt">color =</span> <span class="st">&quot;#363c4c&quot;</span>, <span class="dt">size =</span> <span class="dv">12</span>), </a>
-<a class="sourceLine" id="cb12-41" data-line-number="41">        <span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">color =</span> <span class="st">&quot;#363c4c&quot;</span>, <span class="dt">size =</span> <span class="dv">14</span>), </a>
-<a class="sourceLine" id="cb12-42" data-line-number="42">        <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">color =</span> <span class="st">&quot;#363c4c&quot;</span>, <span class="dt">size =</span> <span class="dv">14</span>), </a>
+<a class="sourceLine" id="cb12-39" data-line-number="39">        <span class="dt">legend.text =</span> <span class="kw">element_text</span>(<span class="dt">color =</span> <span class="st">&quot;#848b9b&quot;</span>, <span class="dt">size =</span> <span class="dv">10</span>), </a>
+<a class="sourceLine" id="cb12-40" data-line-number="40">        <span class="dt">legend.title =</span> <span class="kw">element_text</span>(<span class="dt">color =</span> <span class="st">&quot;#363c4c&quot;</span>, <span class="dt">size =</span> <span class="dv">10</span>), </a>
+<a class="sourceLine" id="cb12-41" data-line-number="41">        <span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">color =</span> <span class="st">&quot;#363c4c&quot;</span>, <span class="dt">size =</span> <span class="dv">12</span>), </a>
+<a class="sourceLine" id="cb12-42" data-line-number="42">        <span class="dt">plot.subtitle =</span> <span class="kw">element_text</span>(<span class="dt">color =</span> <span class="st">&quot;#363c4c&quot;</span>, <span class="dt">size =</span> <span class="dv">12</span>), </a>
 <a class="sourceLine" id="cb12-43" data-line-number="43">        <span class="dt">axis.title =</span> <span class="kw">element_blank</span>(), </a>
 <a class="sourceLine" id="cb12-44" data-line-number="44">        <span class="dt">axis.text =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">6</span>)) </a></code></pre></div>
 <p><br></p>
